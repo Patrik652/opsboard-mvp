@@ -1,5 +1,12 @@
-import { shouldSeed } from "./seedFirestore";
+import { buildSeedWrites } from "./seedFirestore";
 
-test("shouldSeed returns true when no data", () => {
-  expect(shouldSeed({ boards: 0, incidents: 0 })).toBe(true);
+test("buildSeedWrites creates writes for multiple collections", () => {
+  const writes = buildSeedWrites("user-1");
+  const collections = new Set(writes.map((write) => write.collection));
+
+  expect(writes.length).toBeGreaterThan(0);
+  expect(collections.has("boards")).toBe(true);
+  expect(collections.has("cards")).toBe(true);
+  expect(collections.has("incidents")).toBe(true);
+  expect(collections.has("auditLogs")).toBe(true);
 });
