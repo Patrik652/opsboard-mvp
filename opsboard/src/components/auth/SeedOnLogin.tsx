@@ -12,16 +12,18 @@ export default function SeedOnLogin() {
       return;
     }
 
+    const firestore = db;
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
         return;
       }
 
       const boardsSnap = await getDocs(
-        query(collection(db, "boards"), limit(1))
+        query(collection(firestore, "boards"), limit(1))
       );
       const incidentsSnap = await getDocs(
-        query(collection(db, "incidents"), limit(1))
+        query(collection(firestore, "incidents"), limit(1))
       );
 
       if (!shouldSeed({ boards: boardsSnap.size, incidents: incidentsSnap.size })) {
@@ -31,7 +33,7 @@ export default function SeedOnLogin() {
       const writes = buildSeedWrites(user.uid);
       await Promise.all(
         writes.map((write) =>
-          setDoc(doc(collection(db, write.collection), write.id), write.data)
+          setDoc(doc(collection(firestore, write.collection), write.id), write.data)
         )
       );
     });
