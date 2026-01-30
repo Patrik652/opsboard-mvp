@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "public": "opsboard/out",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
