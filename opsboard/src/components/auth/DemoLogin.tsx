@@ -2,11 +2,13 @@
 
 import { useState } from "react";
 import { signInAnonymously } from "firebase/auth";
+import { useRouter } from "next/navigation";
 import { auth } from "@/lib/firebase";
 
 export default function DemoLogin() {
   const [status, setStatus] = useState<string | null>(null);
   const isEnabled = Boolean(auth);
+  const router = useRouter();
 
   return (
     <div className="flex flex-col gap-2">
@@ -22,7 +24,8 @@ export default function DemoLogin() {
           setStatus("Signing in...");
           try {
             await signInAnonymously(auth);
-            setStatus("Signed in. Open Boards to view demo data.");
+            setStatus("Signed in. Opening Boards...");
+            router.push("/boards");
           } catch (error) {
             const message = error instanceof Error ? error.message : "Sign-in failed";
             setStatus(message);
