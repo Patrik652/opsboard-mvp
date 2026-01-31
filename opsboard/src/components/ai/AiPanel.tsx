@@ -1,4 +1,10 @@
+"use client";
+
+import { useState } from "react";
+
 export default function AiPanel() {
+  const [status, setStatus] = useState<string | null>(null);
+
   return (
     <section>
       <div className="mb-6">
@@ -13,13 +19,22 @@ export default function AiPanel() {
           This panel is wired for tool calls. Add your provider key to enable.
         </div>
         <div className="mt-6 flex flex-wrap gap-3">
-          <button className="rounded-lg bg-emerald-400 px-4 py-2 text-sm font-semibold text-zinc-900">
+          <button
+            className="rounded-lg bg-emerald-400 px-4 py-2 text-sm font-semibold text-zinc-900"
+            type="button"
+            onClick={() => setStatus("Provider setup coming soon.")}
+          >
             Connect provider
           </button>
-          <button className="rounded-lg border border-emerald-400/40 px-4 py-2 text-sm text-emerald-200">
+          <button
+            className="rounded-lg border border-emerald-400/40 px-4 py-2 text-sm text-emerald-200"
+            type="button"
+            onClick={() => setStatus("MCP schema preview is coming soon.")}
+          >
             View MCP schema
           </button>
         </div>
+        {status ? <div className="mt-4 text-xs text-emerald-200">{status}</div> : null}
       </div>
     </section>
   );
