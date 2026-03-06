@@ -16,10 +16,9 @@ Opsboard is a Trello-style operations board that combines project management wit
 
 ## Demo Video
 
-<video src="opsboard/docs/media/opsboard-demo-short.mp4" controls muted playsinline width="980"></video>
+[![Opsboard demo preview](./opsboard/docs/media/opsboard-demo-short.gif)](./opsboard/docs/media/opsboard-demo-short.mp4)
 
-If the embedded player does not render in your GitHub view, open it directly:
-[opsboard-demo-short.mp4](./opsboard/docs/media/opsboard-demo-short.mp4)
+Click the preview to open the full MP4.
 
 ## Features
 

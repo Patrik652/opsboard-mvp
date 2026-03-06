@@ -6,9 +6,9 @@ Live demo: https://opsboard-mvp-live.web.app
 
 ## Demo Video
 
-<video src="docs/media/opsboard-demo-short.mp4" controls muted playsinline width="980"></video>
+[![Opsboard demo preview](./docs/media/opsboard-demo-short.gif)](./docs/media/opsboard-demo-short.mp4)
 
-Direct link: [opsboard-demo-short.mp4](./docs/media/opsboard-demo-short.mp4)
+Click the preview to open the full MP4.
 
 ## Features
 
