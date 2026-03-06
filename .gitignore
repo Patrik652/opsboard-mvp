@@ -3,3 +3,4 @@
 firebase-debug.log
 opsboard/opsboard-demo-1440p.mp4
 *.mp4
+!opsboard/docs/media/*.mp4

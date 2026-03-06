@@ -12,6 +12,7 @@
     "test": "vitest",
     "test:e2e": "playwright test",
     "test:e2e:live": "PLAYWRIGHT_BASE_URL=https://opsboard-mvp-live.web.app playwright test tests/e2e/basic.spec.ts --reporter=line",
+    "video:record": "node scripts/record-demo-video.mjs",
     "smoke:demo": "node scripts/check-demo-url.mjs",
     "deploy:firebase": "npm run build && npm run check:export && firebase deploy --only hosting --config ../firebase.json --project opsboard-mvp-live"
   },
