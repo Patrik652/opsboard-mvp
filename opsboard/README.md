@@ -3,7 +3,12 @@
 Opsboard is a Trello-style operations board fused with incident response, audit trails, and live metrics. It is designed to feel like a professional Ops platform while staying simple enough for a fast MVP.
 
 Live demo: https://opsboard-mvp-live.web.app
-Short walkthrough video: `opsboard/docs/media/opsboard-demo-short.mp4`
+
+## Demo Video
+
+<video src="docs/media/opsboard-demo-short.mp4" controls muted playsinline width="980"></video>
+
+Direct link: [opsboard-demo-short.mp4](./docs/media/opsboard-demo-short.mp4)
 
 ## Features
 
