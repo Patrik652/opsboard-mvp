@@ -6,7 +6,7 @@ Live demo: https://opsboard-mvp-live.web.app
 
 ## Demo Video
 
-[![Opsboard demo preview](./docs/media/opsboard-demo-short.gif)](./docs/media/opsboard-demo-short.mp4)
+[![Opsboard demo preview](./docs/media/opsboard-demo-short.gif)](./docs/media/opsboard-demo-captioned.mp4)
 
 Click the preview to open the full MP4.
 
