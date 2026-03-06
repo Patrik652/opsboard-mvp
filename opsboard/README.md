@@ -2,7 +2,7 @@
 
 Opsboard is a Trello-style operations board fused with incident response, audit trails, and live metrics. It is designed to feel like a professional Ops platform while staying simple enough for a fast MVP.
 
-Live demo: https://opsboard-mvp.web.app
+Live demo: https://opsboard-mvp-live.web.app
 
 ## Features
 
@@ -10,7 +10,8 @@ Live demo: https://opsboard-mvp.web.app
 - Incident tracking + status page
 - Audit log timeline
 - Analytics dashboard
-- AI ops copilot (stub panel)
+- AI ops copilot with multi-agent workflow (signal, summary, planner)
+- Operations readiness panel (telemetry + audit + recovery snapshots)
 - Seed demo data for a quick wow factor
 
 ## Product Flow
@@ -67,6 +68,12 @@ npm test
 npm run test:e2e
 ```
 
+Live URL smoke check:
+
+```bash
+npm run smoke:demo
+```
+
 ## Build
 
 ```bash
@@ -82,5 +89,6 @@ See: `opsboard/docs/firebase-hosting.md`
 - [ ] Add Firebase env vars (or provide demo project)
 - [ ] `npm test`
 - [ ] `npm run test:e2e`
+- [ ] `npm run smoke:demo`
 - [ ] `npm run build`
 - [ ] Deploy to Firebase Hosting or Vercel

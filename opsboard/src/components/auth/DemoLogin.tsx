@@ -18,7 +18,8 @@ export default function DemoLogin() {
         }`}
         onClick={async () => {
           if (!auth) {
-            setStatus("Firebase not configured");
+            setStatus("Firebase not configured. Opening offline demo mode...");
+            router.push("/boards");
             return;
           }
           setStatus("Signing in...");
@@ -28,7 +29,8 @@ export default function DemoLogin() {
             router.push("/boards");
           } catch (error) {
             const message = error instanceof Error ? error.message : "Sign-in failed";
-            setStatus(message);
+            setStatus(`Firebase sign-in unavailable (${message}). Opening offline demo mode...`);
+            router.push("/boards");
           }
         }}
         disabled={!isEnabled}

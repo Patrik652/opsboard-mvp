@@ -12,7 +12,7 @@ Opsboard is a Trello-style operations board that combines project management wit
 
 ## Live Demo
 
-**https://opsboard-mvp.web.app**
+**https://opsboard-mvp-live.web.app**
 
 ## Features
 
@@ -31,8 +31,11 @@ Compliance-ready audit log timeline capturing every action with timestamps.
 ### Analytics
 "Reliability Pulse" dashboard with key metrics: cards in flight, open incidents, uptime percentage.
 
-### AI Operations (Stub)
-Placeholder for AI/LLM integration - ready for MCP tool calls.
+### AI Operations (Agent Workflow)
+Multi-agent incident workflow with separate signal, summary, and action-planner agents plus execution trace.
+
+### Operations Readiness
+Dedicated Operations page with telemetry events, audit stream integration, and disaster-recovery snapshot controls.
 
 ## Tech Stack
 
@@ -95,6 +98,8 @@ npm run dev       # Development server
 npm run build     # Production build
 npm test          # Unit tests (Vitest)
 npm run test:e2e  # E2E tests (Playwright)
+npm run smoke:demo # Fails if demo URL returns Firebase "Site Not Found"
+npm run deploy:firebase # Build + static export check + Firebase deploy
 npm run lint      # ESLint
 ```
 

@@ -14,8 +14,24 @@ firebase login
 Run these from repo root:
 
 ```bash
-npm run build --prefix opsboard
-firebase deploy --only hosting
+npm run deploy:firebase --prefix opsboard
 ```
 
-This uses `opsboard/out` as the hosting public directory.
+This command performs:
+1) Next.js static build
+2) Static export integrity check (`out/*` critical pages exist)
+3) `firebase deploy --only hosting`
+
+Current production demo URL:
+
+`https://opsboard-mvp-live.web.app`
+
+## Demo Availability Smoke Check
+
+After deploy:
+
+```bash
+npm run smoke:demo --prefix opsboard
+```
+
+The command fails if the live URL returns Firebase placeholder content such as "Site Not Found".

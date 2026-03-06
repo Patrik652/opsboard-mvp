@@ -22,7 +22,12 @@
 6) **Analytics (10s)**
    - “Reliability pulse: uptime, open incidents, active cards.”
 
-7) **AI Panel (10s)**
-   - “Ready for MCP/LLM extensions.”
+7) **AI Panel (15s)**
+   - Select incident and click **Run workflow**
+   - Show risk score, summary, recommended actions, and agent trace.
+
+8) **Operations (10s)**
+   - Record synthetic alert and create recovery snapshot.
+   - “This is the production-readiness overlay: monitoring + audit + DR.”
 
 Finish: “MVP shows how AI‑first dev can ship a professional ops system fast.”

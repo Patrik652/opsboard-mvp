@@ -1,4 +1,5 @@
 import DemoLogin from "@/components/auth/DemoLogin";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -18,9 +19,9 @@ export default function Home() {
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <DemoLogin />
-            <button className="rounded-xl border border-zinc-700 px-6 py-3 text-sm">
-              Watch 90-sec demo
-            </button>
+            <Link href="/boards" className="rounded-xl border border-zinc-700 px-6 py-3 text-sm">
+              Open workspace without login
+            </Link>
           </div>
         </div>
       </main>

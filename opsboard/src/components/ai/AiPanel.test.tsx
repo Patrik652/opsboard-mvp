@@ -6,8 +6,9 @@ test("renders AI panel heading", () => {
   expect(screen.getByText(/AI Operations Copilot/i)).toBeInTheDocument();
 });
 
-test("shows status when clicking connect provider", () => {
+test("runs agent workflow and renders recommendations", () => {
   render(<AiPanel />);
-  fireEvent.click(screen.getByRole("button", { name: /Connect provider/i }));
-  expect(screen.getByText(/Provider setup coming soon/i)).toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: /Run workflow/i }));
+  expect(screen.getByText(/Recommended actions/i)).toBeInTheDocument();
+  expect(screen.getByText(/Agent execution trace/i)).toBeInTheDocument();
 });

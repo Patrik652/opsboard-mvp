@@ -7,6 +7,7 @@ const navItems = [
   { href: "/audit", label: "Audit" },
   { href: "/analytics", label: "Analytics" },
   { href: "/ai", label: "AI" },
+  { href: "/operations", label: "Operations" },
 ];
 
 export default function Sidebar() {

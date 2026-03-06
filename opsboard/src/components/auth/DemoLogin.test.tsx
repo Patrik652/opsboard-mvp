@@ -34,3 +34,13 @@ test("redirects to boards after sign in", async () => {
   fireEvent.click(screen.getByRole("button", { name: /Try demo account/i }));
   await waitFor(() => expect(push).toHaveBeenCalledWith("/boards"));
 });
+
+test("falls back to offline workspace when firebase sign-in fails", async () => {
+  signInAnonymously.mockRejectedValueOnce(new Error("operation-not-allowed"));
+  render(<DemoLogin />);
+
+  fireEvent.click(screen.getByRole("button", { name: /Try demo account/i }));
+
+  await waitFor(() => expect(push).toHaveBeenCalledWith("/boards"));
+  expect(await screen.findByText(/offline demo mode/i)).toBeInTheDocument();
+});
