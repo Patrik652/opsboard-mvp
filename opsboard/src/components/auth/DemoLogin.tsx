@@ -3,22 +3,24 @@
 import { useState } from "react";
 import { signInAnonymously } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import { auth } from "@/lib/firebase";
+import { auth, isAnonymousAuthEnabled } from "@/lib/firebase";
 
 export default function DemoLogin() {
   const [status, setStatus] = useState<string | null>(null);
-  const isEnabled = Boolean(auth);
+  const canUseFirebaseAuth = Boolean(auth) && isAnonymousAuthEnabled;
   const router = useRouter();
 
   return (
     <div className="flex flex-col gap-2">
       <button
         className={`rounded-xl px-6 py-3 font-semibold transition-colors ${
-          isEnabled ? "bg-emerald-500 text-black hover:bg-emerald-400" : "bg-zinc-700 text-zinc-300"
+          canUseFirebaseAuth
+            ? "bg-emerald-500 text-black hover:bg-emerald-400"
+            : "border border-zinc-700 bg-zinc-900 text-zinc-200 hover:bg-zinc-800"
         }`}
         onClick={async () => {
-          if (!auth) {
-            setStatus("Firebase not configured. Opening offline demo mode...");
+          if (!canUseFirebaseAuth || !auth) {
+            setStatus("Opening offline demo mode...");
             router.push("/boards");
             return;
           }
@@ -33,10 +35,9 @@ export default function DemoLogin() {
             router.push("/boards");
           }
         }}
-        disabled={!isEnabled}
         type="button"
       >
-        {isEnabled ? "Try demo account" : "Configure Firebase to login"}
+        {canUseFirebaseAuth ? "Try demo account" : "Open demo workspace"}
       </button>
       {status ? <div className="text-xs text-emerald-200">{status}</div> : null}
     </div>

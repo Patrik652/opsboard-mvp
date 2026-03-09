@@ -1,15 +1,26 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { vi } from "vitest";
 
-const signInAnonymously = vi.fn(() => Promise.resolve());
-const push = vi.fn();
+const { signInAnonymously, push, firebaseModule } = vi.hoisted(() => ({
+  signInAnonymously: vi.fn(() => Promise.resolve()),
+  push: vi.fn(),
+  firebaseModule: {
+    auth: {},
+    isAnonymousAuthEnabled: true,
+  },
+}));
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push }),
 }));
 
 vi.mock("@/lib/firebase", () => ({
-  auth: {},
+  get auth() {
+    return firebaseModule.auth;
+  },
+  get isAnonymousAuthEnabled() {
+    return firebaseModule.isAnonymousAuthEnabled;
+  },
 }));
 
 vi.mock("firebase/auth", () => ({
@@ -17,6 +28,13 @@ vi.mock("firebase/auth", () => ({
 }));
 
 import DemoLogin from "./DemoLogin";
+
+beforeEach(() => {
+  firebaseModule.isAnonymousAuthEnabled = true;
+  signInAnonymously.mockReset();
+  signInAnonymously.mockResolvedValue(undefined);
+  push.mockReset();
+});
 
 test("shows demo login button", () => {
   render(<DemoLogin />);
@@ -43,4 +61,14 @@ test("falls back to offline workspace when firebase sign-in fails", async () => 
 
   await waitFor(() => expect(push).toHaveBeenCalledWith("/boards"));
   expect(await screen.findByText(/offline demo mode/i)).toBeInTheDocument();
+});
+
+test("skips firebase auth request when anonymous auth is disabled", async () => {
+  firebaseModule.isAnonymousAuthEnabled = false;
+  render(<DemoLogin />);
+
+  fireEvent.click(screen.getByRole("button", { name: /open demo workspace/i }));
+
+  await waitFor(() => expect(push).toHaveBeenCalledWith("/boards"));
+  expect(signInAnonymously).not.toHaveBeenCalled();
 });

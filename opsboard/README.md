@@ -22,9 +22,10 @@ Click the preview to open the full MP4.
 
 ## Product Flow
 
-1) **Try demo account** (Anonymous Auth)
-2) **Auto-seed** demo data on first login
-3) Navigate **Boards → Incidents → Status → Audit → Analytics → AI**
+1) **Open demo workspace** (offline by default)
+2) Optional: **Try demo account** (Firebase Anonymous Auth)
+3) **Auto-seed** demo data on first login
+4) Navigate **Boards → Incidents → Status → Audit → Analytics → AI**
 
 ## Tech Stack
 
@@ -54,9 +55,11 @@ NEXT_PUBLIC_FIREBASE_PROJECT_ID=...
 NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=...
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=...
 NEXT_PUBLIC_FIREBASE_APP_ID=...
+NEXT_PUBLIC_FIREBASE_ENABLE_ANON_AUTH=true
 ```
 
-Without Firebase config, the demo login button is disabled but the UI still works for viewing pages.
+By default, the login CTA opens offline demo mode. Set
+`NEXT_PUBLIC_FIREBASE_ENABLE_ANON_AUTH=true` and configure Firebase Auth to enable real anonymous sign-in.
 
 Enable:
 - Authentication → Sign-in method → Anonymous

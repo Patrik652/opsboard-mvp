@@ -1,5 +1,7 @@
 import { AuditLog, Board, Card, Incident } from "./types";
 
+const DEMO_AUDIT_CREATED_AT = Date.UTC(2026, 2, 1, 9, 0, 0);
+
 export function buildSeedData(userId: string) {
   const boards: Board[] = [
     {
@@ -39,7 +41,7 @@ export function buildSeedData(userId: string) {
     {
       id: "a1",
       message: "Created incident: Latency spike EU",
-      createdAt: Date.now(),
+      createdAt: DEMO_AUDIT_CREATED_AT,
     },
   ];
 

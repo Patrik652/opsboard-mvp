@@ -22,8 +22,17 @@ function getState(): OpsReadinessState {
   };
 }
 
+const EMPTY_STATE: OpsReadinessState = {
+  telemetryTotal: 0,
+  telemetryWarn: 0,
+  auditTotal: 0,
+  latestSnapshot: null,
+};
+
 export default function ReliabilityOpsPanel() {
-  const [state, setState] = useState<OpsReadinessState>(() => getState());
+  const [state, setState] = useState<OpsReadinessState>(() =>
+    typeof window === "undefined" ? EMPTY_STATE : getState()
+  );
   const [snapshotJson, setSnapshotJson] = useState("");
 
   const refresh = () => setState(getState());
