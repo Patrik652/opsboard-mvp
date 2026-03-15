@@ -12,6 +12,10 @@ export type AuditEntry = {
   actor: string;
   action: string;
   details: string;
+  message?: string;
+  entityType?: string;
+  entityId?: string;
+  metadata?: Record<string, unknown>;
   createdAt: number;
 };
 
