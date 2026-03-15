@@ -1,4 +1,7 @@
 {
+  "firestore": {
+    "rules": "opsboard/firestore.rules"
+  },
   "hosting": {
     "public": "opsboard/out",
     "cleanUrls": true,

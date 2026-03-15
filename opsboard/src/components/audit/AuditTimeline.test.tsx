@@ -7,3 +7,8 @@ test("renders audit message", () => {
   render(<AuditTimeline logs={logs} />);
   expect(screen.getByText(/Created incident/i)).toBeInTheDocument();
 });
+
+test("renders empty state when no audit logs exist", () => {
+  render(<AuditTimeline logs={[]} />);
+  expect(screen.getByText(/No audit entries yet/i)).toBeInTheDocument();
+});
