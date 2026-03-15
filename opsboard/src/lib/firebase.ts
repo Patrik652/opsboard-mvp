@@ -14,6 +14,7 @@ const firebaseConfig = {
 export const isFirebaseConfigured = Object.values(firebaseConfig).every(
   (value) => value.length > 0
 );
+export const isGoogleAuthEnabled = isFirebaseConfigured;
 export const isAnonymousAuthEnabled =
   process.env.NEXT_PUBLIC_FIREBASE_ENABLE_ANON_AUTH === "true";
 

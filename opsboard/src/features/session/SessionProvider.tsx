@@ -1,15 +1,17 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import { deriveInitialSessionState, persistRuntimeMode } from "./firebaseSession";
 import { SessionContext, initialSessionState } from "./sessionStore";
 import type { SessionState, SessionValue } from "./types";
 
 export function SessionProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<SessionState>(initialSessionState);
+  const [state, setState] = useState<SessionState>(deriveInitialSessionState);
 
   const value: SessionValue = {
     ...state,
     enterDemoMode: () => {
+      persistRuntimeMode("demo");
       setState({
         mode: "demo",
         status: "signed-out",
@@ -18,6 +20,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       });
     },
     beginAuthenticatedFlow: () => {
+      persistRuntimeMode("authenticated");
       setState((current) => ({
         ...current,
         mode: "authenticated",
@@ -26,6 +29,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       }));
     },
     setAuthenticatedSession: (userId: string) => {
+      persistRuntimeMode("authenticated");
       setState({
         mode: "authenticated",
         status: "ready",
@@ -41,6 +45,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       }));
     },
     resetSession: () => {
+      persistRuntimeMode(null);
       setState(initialSessionState);
     },
   };

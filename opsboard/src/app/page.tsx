@@ -1,4 +1,5 @@
 import DemoLogin from "@/components/auth/DemoLogin";
+import GoogleLoginButton from "@/components/auth/GoogleLoginButton";
 import Link from "next/link";
 
 export default function Home() {
@@ -18,9 +19,10 @@ export default function Home() {
             stable.
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-4">
+            <GoogleLoginButton />
             <DemoLogin />
             <Link href="/boards" className="rounded-xl border border-zinc-700 px-6 py-3 text-sm">
-              Open demo workspace
+              Explore current workspace
             </Link>
           </div>
         </div>
