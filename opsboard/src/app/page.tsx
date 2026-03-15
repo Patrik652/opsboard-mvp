@@ -20,7 +20,7 @@ export default function Home() {
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <DemoLogin />
             <Link href="/boards" className="rounded-xl border border-zinc-700 px-6 py-3 text-sm">
-              Open workspace without login
+              Open demo workspace
             </Link>
           </div>
         </div>

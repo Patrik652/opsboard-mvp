@@ -3,12 +3,19 @@
 import { useState } from "react";
 import { signInAnonymously } from "firebase/auth";
 import { useRouter } from "next/navigation";
+import { useSession } from "@/features/session/useSession";
 import { auth, isAnonymousAuthEnabled } from "@/lib/firebase";
 
 export default function DemoLogin() {
   const [status, setStatus] = useState<string | null>(null);
   const canUseFirebaseAuth = Boolean(auth) && isAnonymousAuthEnabled;
   const router = useRouter();
+  const {
+    beginAuthenticatedFlow,
+    enterDemoMode,
+    setAuthenticatedSession,
+    setSessionError,
+  } = useSession();
 
   return (
     <div className="flex flex-col gap-2">
@@ -20,17 +27,24 @@ export default function DemoLogin() {
         }`}
         onClick={async () => {
           if (!canUseFirebaseAuth || !auth) {
+            enterDemoMode();
             setStatus("Opening offline demo mode...");
             router.push("/boards");
             return;
           }
+
+          beginAuthenticatedFlow();
           setStatus("Signing in...");
+
           try {
             await signInAnonymously(auth);
+            setAuthenticatedSession("anonymous");
             setStatus("Signed in. Opening Boards...");
             router.push("/boards");
           } catch (error) {
             const message = error instanceof Error ? error.message : "Sign-in failed";
+            enterDemoMode();
+            setSessionError(message);
             setStatus(`Firebase sign-in unavailable (${message}). Opening offline demo mode...`);
             router.push("/boards");
           }
