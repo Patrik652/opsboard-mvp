@@ -1,3 +1,5 @@
+"use client";
+
 import AiPanel from "@/components/ai/AiPanel";
 
 export default function AiPage() {

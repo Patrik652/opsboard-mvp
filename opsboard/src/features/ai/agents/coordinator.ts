@@ -6,6 +6,13 @@ import type {
   IncidentContext,
   IncidentWorkflowReport,
 } from "./types";
+import type { AuditLog, Card, Incident } from "@/lib/types";
+
+type WorkspaceIncidentSnapshot = {
+  incidents: Incident[];
+  cards: Card[];
+  auditLogs: AuditLog[];
+};
 
 function runAgent<T>(
   agent: AgentTrace["agent"],
@@ -44,5 +51,31 @@ export function runIncidentResponseWorkflow(
     summary: summaryStep.result,
     actionPlan: actionPlannerStep.result,
     trace: [signalStep.trace, summaryStep.trace, actionPlannerStep.trace],
+  };
+}
+
+export function buildWorkspaceIncidentContext(
+  snapshot: WorkspaceIncidentSnapshot,
+  selectedIncidentId?: string
+): IncidentContext | null {
+  const openIncidents = snapshot.incidents.filter((incident) => incident.state !== "resolved");
+  const incident =
+    snapshot.incidents.find((item) => item.id === selectedIncidentId) ??
+    openIncidents[0] ??
+    snapshot.incidents[0];
+
+  if (!incident) {
+    return null;
+  }
+
+  const relatedCards = snapshot.cards.filter(
+    (card) => card.linkedIncidentId === incident.id || card.priority === "high"
+  );
+
+  return {
+    incident,
+    openIncidents,
+    relatedCards,
+    recentAuditLogs: snapshot.auditLogs.slice(-5),
   };
 }

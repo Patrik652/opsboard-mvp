@@ -1,10 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { runIncidentResponseWorkflow } from "@/features/ai/agents/coordinator";
-import type { IncidentContext, IncidentWorkflowReport } from "@/features/ai/agents/types";
-import { auditLogger, telemetryClient } from "@/features/platform/client";
-import { buildSeedData } from "@/lib/seed";
+import { useState } from "react";
+import { runDeterministicCopilot } from "@/features/copilot/runDeterministicCopilot";
+import type { IncidentWorkflowReport } from "@/features/ai/agents/types";
+import { resolveWorkspaceRepository } from "@/features/data/repositories/runtimeWorkspaceRepository";
+import { telemetryClient } from "@/features/platform/client";
+import { useWorkspaceSnapshot } from "@/features/workspace/useWorkspaceSnapshot";
 
 function formatRiskTone(score: number): string {
   if (score >= 80) return "text-red-300";
@@ -14,27 +15,24 @@ function formatRiskTone(score: number): string {
 }
 
 export default function AiPanel() {
-  const seed = useMemo(() => buildSeedData("demo"), []);
-  const [selectedIncidentId, setSelectedIncidentId] = useState(seed.incidents[0]?.id ?? "");
+  const { mode, workspace, workspaceUserId, isLoading, error } = useWorkspaceSnapshot();
+  const [selectedIncidentId, setSelectedIncidentId] = useState("");
   const [status, setStatus] = useState<string | null>(null);
   const [report, setReport] = useState<IncidentWorkflowReport | null>(null);
-
+  const incidents = workspace?.incidents ?? [];
+  const effectiveSelectedIncidentId = incidents.some((incident) => incident.id === selectedIncidentId)
+    ? selectedIncidentId
+    : incidents[0]?.id ?? "";
   const selectedIncident =
-    seed.incidents.find((incident) => incident.id === selectedIncidentId) ?? seed.incidents[0];
+    incidents.find((incident) => incident.id === effectiveSelectedIncidentId) ?? incidents[0];
 
-  const runWorkflow = () => {
-    if (!selectedIncident) {
+  const runWorkflow = async () => {
+    if (!workspace || !selectedIncident) {
       setStatus("No incident selected.");
       return;
     }
 
-    const context: IncidentContext = {
-      incident: selectedIncident,
-      openIncidents: seed.incidents.filter((incident) => incident.state !== "resolved"),
-      relatedCards: seed.cards.filter((card) => card.priority === "high"),
-      recentAuditLogs: seed.auditLogs,
-    };
-    const workflowReport = runIncidentResponseWorkflow(context);
+    const workflowReport = runDeterministicCopilot(workspace, selectedIncident.id);
 
     setReport(workflowReport);
     setStatus(`Workflow executed for ${selectedIncident.title}.`);
@@ -47,11 +45,23 @@ export default function AiPanel() {
         riskScore: workflowReport.risk.score,
       },
     });
-    auditLogger.log({
-      actor: "ai-copilot",
-      action: "incident-workflow-run",
-      details: `Generated response plan for ${selectedIncident.id} (${workflowReport.risk.level})`,
-    });
+
+    if (workspaceUserId) {
+      const repository = resolveWorkspaceRepository(mode);
+      await repository.writeAuditLog({
+        userId: workspaceUserId,
+        actor: "ai-copilot",
+        action: "ai.workflow.executed",
+        entityType: "incident",
+        entityId: selectedIncident.id,
+        message: `Generated deterministic response plan for ${selectedIncident.title}.`,
+        details: `Workflow risk ${workflowReport.risk.level} (${workflowReport.risk.score}/100).`,
+        metadata: {
+          riskLevel: workflowReport.risk.level,
+          riskScore: workflowReport.risk.score,
+        },
+      });
+    }
   };
 
   return (
@@ -65,13 +75,24 @@ export default function AiPanel() {
 
       <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
         <div className="text-sm text-zinc-300">Agent workflow</div>
+        {error ? (
+          <div className="mt-4 rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+            {error}
+          </div>
+        ) : null}
+        {isLoading ? (
+          <div className="mt-4 rounded-lg border border-zinc-800 bg-zinc-950 px-4 py-3 text-sm text-zinc-400">
+            Loading workspace for deterministic analysis...
+          </div>
+        ) : null}
         <div className="mt-3 grid gap-3 md:grid-cols-[minmax(0,1fr)_auto]">
           <select
             className="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-white"
-            value={selectedIncidentId}
+            value={effectiveSelectedIncidentId}
             onChange={(event) => setSelectedIncidentId(event.target.value)}
+            disabled={isLoading || !incidents.length}
           >
-            {seed.incidents.map((incident) => (
+            {incidents.map((incident) => (
               <option key={incident.id} value={incident.id}>
                 {incident.title}
               </option>
@@ -79,6 +100,7 @@ export default function AiPanel() {
           </select>
           <button
             className="rounded-lg bg-emerald-400 px-4 py-2 text-sm font-semibold text-zinc-900"
+            disabled={isLoading || !selectedIncident}
             type="button"
             onClick={runWorkflow}
           >
@@ -123,7 +145,7 @@ export default function AiPanel() {
       ) : null}
 
       <div className="mt-6 rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4 text-xs text-emerald-200">
-        Agent layer is deterministic by default and ready to swap each agent with LLM/MCP calls.
+        Copilot is deterministic by default and derives recommendations from the live workspace snapshot.
       </div>
     </section>
   );
