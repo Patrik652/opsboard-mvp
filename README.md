@@ -1,8 +1,8 @@
-# Opsboard MVP
+# Opsboard
 
 **Command your work. Prove your reliability.**
 
-Opsboard is a Trello-style operations board that combines project management with incident response and operational monitoring. Built for teams who need to manage work while tracking reliability and maintaining audit trails for compliance.
+Opsboard is a portfolio-grade operations workspace that combines kanban execution, incident response, service health, audit history, analytics, and a deterministic reliability copilot in one product. It is built as a production MVP, not a static dashboard demo.
 
 ![Next.js](https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js)
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react)
@@ -12,7 +12,7 @@ Opsboard is a Trello-style operations board that combines project management wit
 
 ## Live Demo
 
-**https://opsboard-mvp-live.web.app**
+https://opsboard-mvp-live.web.app
 
 ## Demo Video
 
@@ -20,113 +20,165 @@ Opsboard is a Trello-style operations board that combines project management wit
 
 Click the preview to open the full MP4.
 
-## Features
+## Product Scope
+
+Opsboard v1 is designed as a `single-user operational workspace` with:
+
+- Google sign-in for authenticated mode
+- starter workspace bootstrap on first login
+- isolated per-user Firestore persistence under `users/{uid}/...`
+- explicit demo mode for instant evaluation without authentication
+- deterministic copilot logic that works without an external LLM
+- audit-first write flows for incidents and operations actions
+
+## Core Features
 
 ### Boards
-Trello-style Kanban boards with lists (Backlog, In Progress, Done) and cards with priority levels.
+
+- Live kanban board backed by repository-driven data
+- Create cards directly in the workspace
+- Move cards between lists with persistent state
+- Shared board model for demo and authenticated runtime modes
 
 ### Incidents
-Track live incidents with severity levels (low/med/high) and states (open/monitoring/resolved).
+
+- Create incidents from the UI with severity and summary
+- Move incidents through `open`, `monitoring`, and `resolved`
+- Automatic audit events on incident creation and state transitions
 
 ### Status
-Public-facing service health dashboard showing overall system status and individual service cards.
+
+- Service health view derived from live workspace services
+- Overall workspace health calculated from incidents and service state
 
 ### Audit
-Compliance-ready audit log timeline capturing every action with timestamps.
+
+- Live audit timeline sourced from the active workspace
+- Richer event rendering with action details and actor metadata
 
 ### Analytics
-"Reliability Pulse" dashboard with key metrics: cards in flight, open incidents, uptime percentage.
 
-### AI Operations (Agent Workflow)
-Multi-agent incident workflow with separate signal, summary, and action-planner agents plus execution trace.
+- Derived workspace metrics for cards, incidents, audit volume, and uptime
+- No seed-only dashboard logic in app routes
+
+### Deterministic Copilot
+
+- Deterministic risk scoring over live incidents, cards, services, and audit history
+- Summary, action plan, and execution trace without external AI dependencies
 
 ### Operations Readiness
-Dedicated Operations page with telemetry events, audit stream integration, and disaster-recovery snapshot controls.
+
+- Local telemetry and recovery snapshot controls
+- Workspace-aware audit writes for operations actions
+
+## Architecture
+
+The app keeps routes thin and pushes behavior into feature and repository layers.
+
+- `opsboard/src/app`
+  Route entrypoints and page composition
+- `opsboard/src/features`
+  Session, boards, incidents, analytics, status, workspace, audit, and copilot logic
+- `opsboard/src/features/data/repositories`
+  Demo and Firestore adapters behind shared contracts
+- `opsboard/src/components`
+  UI for boards, incidents, analytics, audit, auth, AI, and operations
+
+Runtime is explicitly split into:
+
+- `demo`
+  Local demo repository with persistent browser storage
+- `authenticated`
+  Firebase Auth + Firestore-backed workspace for the signed-in user
 
 ## Tech Stack
 
 | Category | Technologies |
-|----------|-------------|
-| **Frontend** | Next.js 16, React 19, TypeScript 5 |
-| **Styling** | Tailwind CSS 4, Space Grotesk font |
-| **Backend** | Firebase Auth (anonymous), Firestore |
-| **Testing** | Vitest, React Testing Library, Playwright |
-| **Deployment** | Firebase Hosting |
+| --- | --- |
+| Frontend | Next.js 16 App Router, React 19, TypeScript 5 |
+| Styling | Tailwind CSS 4 |
+| Auth | Firebase Auth with Google sign-in |
+| Data | Firestore with per-user document paths |
+| Testing | Vitest, React Testing Library, Playwright |
+| Hosting | Firebase Hosting |
 
-## Quick Start
+## Local Setup
 
 ```bash
-# Clone the repository
-git clone https://github.com/Patrik652/opsboard-mvp.git
+git clone git@github.com:Patrik652/opsboard-mvp.git
 cd opsboard-mvp/opsboard
-
-# Install dependencies
 npm install
+```
 
-# Run development server
+Create an `.env.local` file in `opsboard/`:
+
+```bash
+NEXT_PUBLIC_FIREBASE_API_KEY=...
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=...
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=...
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=...
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=...
+NEXT_PUBLIC_FIREBASE_APP_ID=...
+```
+
+Then run:
+
+```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open `http://localhost:3000`.
 
-## Project Structure
+If Firebase env vars are not set, the app still supports local demo mode.
 
-```
-opsboard/
-├── src/
-│   ├── app/
-│   │   ├── page.tsx              # Landing page
-│   │   └── (app)/                # Protected app routes
-│   │       ├── boards/
-│   │       ├── incidents/
-│   │       ├── status/
-│   │       ├── audit/
-│   │       ├── analytics/
-│   │       └── ai/
-│   ├── components/
-│   │   ├── auth/                 # DemoLogin, SeedOnLogin
-│   │   ├── layout/               # Sidebar, Topbar
-│   │   ├── boards/               # BoardView
-│   │   ├── incidents/            # IncidentList
-│   │   ├── audit/                # AuditTimeline
-│   │   ├── analytics/            # AnalyticsDashboard
-│   │   └── ai/                   # AiPanel
-│   └── lib/
-│       ├── firebase.ts           # Firebase config
-│       ├── types.ts              # TypeScript types
-│       └── seed.ts               # Demo data
-```
+## Firebase Notes
+
+- Google Auth must be enabled in Firebase Authentication
+- Firestore is scoped with rules in [opsboard/firestore.rules](./opsboard/firestore.rules)
+- User data is stored under `users/{uid}/...`
 
 ## Scripts
 
 ```bash
-npm run dev       # Development server
-npm run build     # Production build
-npm test          # Unit tests (Vitest)
-npm run test:e2e  # E2E tests (Playwright)
-npm run smoke:demo # Fails if demo URL returns Firebase "Site Not Found"
-npm run deploy:firebase # Build + static export check + Firebase deploy
-npm run lint      # ESLint
+npm run dev
+npm run build
+npm run lint
+npm test -- --run
+npm run test:e2e
+npm run deploy:firebase
 ```
 
-## Firebase Setup
+## Verification
 
-1. Create a Firebase project at [console.firebase.google.com](https://console.firebase.google.com)
-2. Enable Authentication (Anonymous provider)
-3. Enable Firestore Database
-4. Copy your config to `src/lib/firebase.ts`
+Latest local verification before release:
 
-## Design
+- `npm test -- --run`: `24` files, `37` tests passed
+- `npm run lint`: passed
+- `npm run build`: passed
+- `npm run test:e2e -- --reporter=line`: `3 passed`
 
-- Dark theme with Zinc backgrounds
-- Emerald accent color
-- Space Grotesk typography
-- Subtle grid overlay for technical aesthetic
+## Portfolio Highlights
+
+- Real authentication plus a separate instant demo path
+- Shared repository contracts for demo and production persistence
+- Deterministic copilot layer designed to be defensible and testable
+- Firestore security rules included in the repo
+- End-to-end workflow coverage for board, incident, and audit paths
+
+## Repository Layout
+
+```text
+.
+├── docs/
+├── firebase.json
+├── opsboard/
+│   ├── firestore.rules
+│   ├── src/
+│   ├── tests/e2e/
+│   └── package.json
+└── README.md
+```
 
 ## License
 
 MIT
-
----
-
-Built with Next.js, React, and Firebase.
