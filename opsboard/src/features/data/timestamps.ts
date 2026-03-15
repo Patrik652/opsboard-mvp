@@ -10,7 +10,7 @@ export function createTimestampFields(now: number = Date.now()): TimestampFields
   };
 }
 
-export function touchUpdatedAt<T extends { updatedAt?: number }>(
+export function touchUpdatedAt<T extends object>(
   record: T,
   now: number = Date.now()
 ): T & { updatedAt: number } {
