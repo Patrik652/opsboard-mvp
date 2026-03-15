@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import { collection, doc, getDocs, limit, query, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
+import { bootstrapStarterWorkspace } from "@/features/workspace/bootstrapStarterWorkspace";
 import { auth, db, isFirebaseConfigured } from "@/lib/firebase";
-import { buildSeedWrites, shouldSeed } from "@/lib/seedFirestore";
 
 export default function SeedOnLogin() {
   useEffect(() => {
@@ -19,23 +19,17 @@ export default function SeedOnLogin() {
         return;
       }
 
-      const boardsSnap = await getDocs(
-        query(collection(firestore, "boards"), limit(1))
-      );
-      const incidentsSnap = await getDocs(
-        query(collection(firestore, "incidents"), limit(1))
-      );
-
-      if (!shouldSeed({ boards: boardsSnap.size, incidents: incidentsSnap.size })) {
-        return;
-      }
-
-      const writes = buildSeedWrites(user.uid);
-      await Promise.all(
-        writes.map((write) =>
-          setDoc(doc(collection(firestore, write.collection), write.id), write.data)
-        )
-      );
+      await bootstrapStarterWorkspace({
+        userId: user.uid,
+        hasExistingWorkspace: async () => false,
+        hasRecord: async (path) => {
+          const existing = await getDoc(doc(firestore, path));
+          return existing.exists();
+        },
+        writeRecord: async (path, data) => {
+          await setDoc(doc(firestore, path), data);
+        },
+      });
     });
 
     return () => unsubscribe();

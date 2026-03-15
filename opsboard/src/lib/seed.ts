@@ -1,4 +1,4 @@
-import { AuditLog, Board, Card, Incident } from "./types";
+import { AuditLog, Board, Card, Incident, Service } from "./types";
 
 const DEMO_AUDIT_CREATED_AT = Date.UTC(2026, 2, 1, 9, 0, 0);
 
@@ -37,6 +37,12 @@ export function buildSeedData(userId: string) {
     { id: "i2", title: "Webhook failures", severity: "med", state: "open" },
   ];
 
+  const services: Service[] = [
+    { id: "svc-api", name: "API Gateway", status: "operational" },
+    { id: "svc-hooks", name: "Webhooks", status: "degraded" },
+    { id: "svc-sync", name: "Realtime Sync", status: "operational" },
+  ];
+
   const auditLogs: AuditLog[] = [
     {
       id: "a1",
@@ -45,5 +51,5 @@ export function buildSeedData(userId: string) {
     },
   ];
 
-  return { boards, cards, incidents, auditLogs, userId };
+  return { boards, cards, incidents, auditLogs, services, userId };
 }

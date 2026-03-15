@@ -1,12 +1,14 @@
 import { buildSeedWrites } from "./seedFirestore";
 
-test("buildSeedWrites creates writes for multiple collections", () => {
+test("buildSeedWrites creates per-user starter workspace writes", () => {
   const writes = buildSeedWrites("user-1");
-  const collections = new Set(writes.map((write) => write.collection));
+  const paths = writes.map((write) => write.path);
 
   expect(writes.length).toBeGreaterThan(0);
-  expect(collections.has("boards")).toBe(true);
-  expect(collections.has("cards")).toBe(true);
-  expect(collections.has("incidents")).toBe(true);
-  expect(collections.has("auditLogs")).toBe(true);
+  expect(paths).toContain("users/user-1");
+  expect(paths.some((path) => path.includes("/boards/"))).toBe(true);
+  expect(paths.some((path) => path.includes("/cards/"))).toBe(true);
+  expect(paths.some((path) => path.includes("/incidents/"))).toBe(true);
+  expect(paths.some((path) => path.includes("/services/"))).toBe(true);
+  expect(paths.some((path) => path.includes("/auditLogs/"))).toBe(true);
 });
