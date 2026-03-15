@@ -20,6 +20,21 @@ https://opsboard-mvp-live.web.app
 
 Click the preview to open the full MP4.
 
+## Screenshots
+
+| Boards | Incidents | Copilot |
+| --- | --- | --- |
+| ![Boards screenshot](./opsboard/docs/media/opsboard-screenshot-boards.png) | ![Incidents screenshot](./opsboard/docs/media/opsboard-screenshot-incidents.png) | ![Copilot screenshot](./opsboard/docs/media/opsboard-screenshot-copilot.png) |
+
+## What To Look At
+
+If you are reviewing this as a portfolio project, the highest-signal parts are:
+
+- the repository-backed split between `demo` and `authenticated` runtime modes
+- the incident lifecycle and automatic audit side effects
+- the deterministic copilot that derives recommendations from live workspace state
+- the Firestore security rules and end-to-end workflow coverage
+
 ## Product Scope
 
 Opsboard v1 is designed as a `single-user operational workspace` with:
@@ -91,6 +106,22 @@ Runtime is explicitly split into:
 - `authenticated`
   Firebase Auth + Firestore-backed workspace for the signed-in user
 
+```mermaid
+flowchart LR
+  UI[App Router UI] --> Features[Feature View Models]
+  Features --> Session[Session Runtime]
+  Features --> Commands[Boards Incidents Audit Copilot]
+  Commands --> Repos[Workspace Repository Contract]
+  Session --> Repos
+  Repos --> DemoRepo[Demo Repository]
+  Repos --> FirestoreRepo[Firestore Repository]
+  DemoRepo --> Browser[(Local Storage)]
+  FirestoreRepo --> Auth[(Firebase Auth)]
+  FirestoreRepo --> DB[(Firestore)]
+  Commands --> Metrics[Derived Metrics and Copilot]
+  Commands --> Audit[Audit Log Writes]
+```
+
 ## Tech Stack
 
 | Category | Technologies |
@@ -157,6 +188,11 @@ Latest local verification before release:
 - `npm run build`: passed
 - `npm run test:e2e -- --reporter=line`: `3 passed`
 
+Live verification:
+
+- `npm run smoke:demo`: passed against `https://opsboard-mvp-live.web.app`
+- live Playwright smoke for `basic`, `demo`, and `workspace` flows: `3 passed`
+
 ## Portfolio Highlights
 
 - Real authentication plus a separate instant demo path
@@ -170,9 +206,12 @@ Latest local verification before release:
 ```text
 .
 ├── docs/
+│   ├── plans/
+│   └── releases/
 ├── firebase.json
 ├── opsboard/
 │   ├── firestore.rules
+│   ├── docs/media/
 │   ├── src/
 │   ├── tests/e2e/
 │   └── package.json
