@@ -14,10 +14,6 @@ function createId(prefix: string): string {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
-function createEmptyServices(): Service[] {
-  return [];
-}
-
 function createWorkspaceSnapshot(userId: string): WorkspaceSnapshot {
   const seed = buildSeedData(userId);
   return {
@@ -26,7 +22,7 @@ function createWorkspaceSnapshot(userId: string): WorkspaceSnapshot {
     cards: seed.cards,
     incidents: seed.incidents,
     auditLogs: seed.auditLogs,
-    services: createEmptyServices(),
+    services: seed.services,
     snapshots: [],
   };
 }

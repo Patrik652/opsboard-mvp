@@ -7,6 +7,7 @@ test("demo repository returns starter workspace data from local persistence", as
   expect(workspace.userId).toBe("demo-user");
   expect(workspace.boards.length).toBeGreaterThan(0);
   expect(workspace.incidents.length).toBeGreaterThan(0);
+  expect(workspace.services.length).toBeGreaterThan(0);
 });
 
 test("demo repository persists created cards between reads", async () => {

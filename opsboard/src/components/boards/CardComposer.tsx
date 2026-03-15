@@ -1,15 +1,23 @@
 "use client";
 
 import { useState } from "react";
-
-type List = { id: string; name: string };
+import type { BoardList } from "@/features/data/model";
 
 type CardComposerProps = {
-  lists: List[];
-  onAddCard: (input: { title: string; listId: string }) => void;
+  lists: BoardList[];
+  isSaving?: boolean;
+  error?: string | null;
+  onAddCard: (input: { title: string; listId: string }) => Promise<void> | void;
+  onCancel?: () => void;
 };
 
-export default function CardComposer({ lists, onAddCard }: CardComposerProps) {
+export default function CardComposer({
+  lists,
+  isSaving = false,
+  error = null,
+  onAddCard,
+  onCancel,
+}: CardComposerProps) {
   const [draftTitle, setDraftTitle] = useState("");
   const [draftListId, setDraftListId] = useState(lists[0]?.id ?? "");
 
@@ -36,16 +44,29 @@ export default function CardComposer({ lists, onAddCard }: CardComposerProps) {
         </select>
         <button
           className="rounded-lg bg-emerald-400 px-4 py-2 text-sm font-semibold text-zinc-900"
+          disabled={isSaving || !draftTitle.trim() || !draftListId}
           type="button"
-          onClick={() => {
+          onClick={async () => {
             if (!draftTitle.trim() || !draftListId) return;
-            onAddCard({ title: draftTitle.trim(), listId: draftListId });
+            await onAddCard({ title: draftTitle.trim(), listId: draftListId });
             setDraftTitle("");
+            setDraftListId(lists[0]?.id ?? "");
           }}
         >
-          Add card
+          {isSaving ? "Saving..." : "Add card"}
         </button>
+        {onCancel ? (
+          <button
+            className="rounded-lg border border-zinc-700 px-4 py-2 text-sm text-zinc-300"
+            disabled={isSaving}
+            type="button"
+            onClick={onCancel}
+          >
+            Cancel
+          </button>
+        ) : null}
       </div>
+      {error ? <div className="mt-3 text-xs text-rose-300">{error}</div> : null}
     </div>
   );
 }
