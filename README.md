@@ -20,6 +20,16 @@ Opsboard is a Trello-style operations board that combines project management wit
 
 Click the preview to open the full MP4.
 
+## Publish Assets (Day 9)
+
+- 90-120s demo source (ready to upload): `opsboard/docs/media/opsboard-demo-captioned.mp4`
+- Short preview clip: `opsboard/docs/media/opsboard-demo-short.mp4`
+- Thumbnail/loop preview: `opsboard/docs/media/opsboard-demo-short.gif`
+- Backup full-quality capture: `opsboard/opsboard-demo-1440p.mp4`
+
+Suggested upload title:
+- `Opsboard MVP: Reliability + Incident Command Center (90s Demo)`
+
 ## Features
 
 ### Boards

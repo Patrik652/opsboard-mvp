@@ -1,5 +1,6 @@
 import AuditTimeline from "@/components/audit/AuditTimeline";
 import { buildSeedData } from "@/lib/seed";
+import { mutedTextClassName, pageTitleClassName } from "@/lib/uiClassNames";
 
 export default function AuditPage() {
   const seed = buildSeedData("demo");
@@ -7,8 +8,8 @@ export default function AuditPage() {
   return (
     <section>
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-white">Audit log</h1>
-        <p className="text-sm text-zinc-400">Every action captured for compliance and review.</p>
+        <h1 className={pageTitleClassName}>Audit log</h1>
+        <p className={mutedTextClassName}>Every action captured for compliance and review.</p>
       </div>
       <AuditTimeline logs={seed.auditLogs} />
     </section>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import BoardColumn from "./BoardColumn";
 import CardComposer from "./CardComposer";
 import type { Card } from "@/lib/types";
+import { pageTitleClassName } from "@/lib/uiClassNames";
 
 type List = { id: string; name: string };
 
@@ -20,7 +21,7 @@ export default function BoardView({ title, lists, cards }: BoardViewProps) {
   return (
     <section>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-white">{title}</h1>
+        <h1 className={pageTitleClassName}>{title}</h1>
         <button
           className="rounded-lg border border-zinc-700 px-3 py-2 text-sm text-zinc-200"
           type="button"

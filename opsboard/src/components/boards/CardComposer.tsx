@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { primaryActionButtonClassName } from "@/lib/uiClassNames";
 
 type List = { id: string; name: string };
 
@@ -35,7 +36,7 @@ export default function CardComposer({ lists, onAddCard }: CardComposerProps) {
           ))}
         </select>
         <button
-          className="rounded-lg bg-emerald-400 px-4 py-2 text-sm font-semibold text-zinc-900"
+          className={primaryActionButtonClassName}
           type="button"
           onClick={() => {
             if (!draftTitle.trim() || !draftListId) return;

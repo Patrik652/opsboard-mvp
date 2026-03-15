@@ -1,9 +1,11 @@
 import { defineConfig } from "@playwright/test";
+import { DEFAULT_PLAYWRIGHT_PORT, getPlaywrightBaseUrl } from "./src/lib/runtimeConfig";
 
-const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? "http://127.0.0.1:3301";
+const baseURL = getPlaywrightBaseUrl();
+const parsedBaseUrl = new URL(baseURL);
 const isLocalBaseUrl =
-  baseURL.includes("127.0.0.1") || baseURL.includes("localhost");
-const localPort = isLocalBaseUrl ? new URL(baseURL).port || "3301" : "3301";
+  parsedBaseUrl.hostname === "127.0.0.1" || parsedBaseUrl.hostname === "localhost";
+const localPort = isLocalBaseUrl ? parsedBaseUrl.port || DEFAULT_PLAYWRIGHT_PORT : DEFAULT_PLAYWRIGHT_PORT;
 
 export default defineConfig({
   testDir: "./tests/e2e",

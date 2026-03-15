@@ -5,6 +5,12 @@ import { runIncidentResponseWorkflow } from "@/features/ai/agents/coordinator";
 import type { IncidentContext, IncidentWorkflowReport } from "@/features/ai/agents/types";
 import { auditLogger, telemetryClient } from "@/features/platform/client";
 import { buildSeedData } from "@/lib/seed";
+import {
+  mutedTextClassName,
+  panelClassName,
+  pageTitleClassName,
+  primaryActionButtonClassName,
+} from "@/lib/uiClassNames";
 
 function formatRiskTone(score: number): string {
   if (score >= 80) return "text-red-300";
@@ -57,8 +63,8 @@ export default function AiPanel() {
   return (
     <section>
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-white">AI Operations Copilot</h1>
-        <p className="text-sm text-zinc-400">
+        <h1 className={pageTitleClassName}>AI Operations Copilot</h1>
+        <p className={mutedTextClassName}>
           Multi-agent workflow for incident triage, summary drafting, and action planning.
         </p>
       </div>
@@ -78,7 +84,7 @@ export default function AiPanel() {
             ))}
           </select>
           <button
-            className="rounded-lg bg-emerald-400 px-4 py-2 text-sm font-semibold text-zinc-900"
+            className={primaryActionButtonClassName}
             type="button"
             onClick={runWorkflow}
           >
@@ -90,7 +96,7 @@ export default function AiPanel() {
 
       {report ? (
         <div className="mt-6 grid gap-4 lg:grid-cols-2">
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-4">
+          <div className={panelClassName}>
             <h2 className="text-base font-semibold text-white">Incident summary</h2>
             <div className={`mt-2 text-sm font-semibold ${formatRiskTone(report.risk.score)}`}>
               Risk score: {report.risk.score} ({report.risk.level.toUpperCase()})
@@ -99,7 +105,7 @@ export default function AiPanel() {
             <p className="mt-2 text-sm text-zinc-300">{report.summary.narrative}</p>
           </div>
 
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-4">
+          <div className={panelClassName}>
             <h2 className="text-base font-semibold text-white">Recommended actions</h2>
             <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-zinc-200">
               {report.actionPlan.immediate.map((step) => (
@@ -108,7 +114,7 @@ export default function AiPanel() {
             </ul>
           </div>
 
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-4 lg:col-span-2">
+          <div className={`${panelClassName} lg:col-span-2`}>
             <h2 className="text-base font-semibold text-white">Agent execution trace</h2>
             <div className="mt-3 grid gap-3 md:grid-cols-3">
               {report.trace.map((item) => (
