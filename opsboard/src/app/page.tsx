@@ -7,7 +7,7 @@ export default function Home() {
     <div className="min-h-screen bg-background text-foreground">
       <main className="mx-auto flex min-h-screen max-w-6xl flex-col justify-center px-6 py-20">
         <div className="max-w-2xl">
-          <p className="mb-4 text-sm uppercase tracking-[0.3em] text-emerald-400">
+          <p className="mb-4 text-sm uppercase tracking-[0.3em] text-accent">
             Opsboard MVP
           </p>
           <h1 className="text-4xl font-semibold leading-tight sm:text-6xl">
@@ -21,7 +21,7 @@ export default function Home() {
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <GoogleLoginButton />
             <DemoLogin />
-            <Link href="/boards" className="rounded-xl border border-zinc-700 px-6 py-3 text-sm">
+            <Link href="/boards" className="rounded-xl border border-border-strong px-6 py-3 text-sm">
               Explore current workspace
             </Link>
           </div>

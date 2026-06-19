@@ -12,6 +12,18 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  /* Semantic surface/border/accent tokens. Each is an exact alias of the
+     Tailwind primitive already used across the app, so migrating utilities
+     changes no pixels - it only gives humans and AI a stable vocabulary
+     instead of picking zinc or emerald shades by feel. Not a redesign. */
+  --color-panel: var(--color-zinc-900);
+  --color-panel-muted: var(--color-zinc-950);
+  --color-border: var(--color-zinc-800);
+  --color-border-strong: var(--color-zinc-700);
+  --color-accent: var(--color-emerald-400);
+  --color-accent-foreground: var(--color-zinc-900);
+
   --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
 }

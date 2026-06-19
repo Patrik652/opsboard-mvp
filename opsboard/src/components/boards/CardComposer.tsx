@@ -22,17 +22,17 @@ export default function CardComposer({
   const [draftListId, setDraftListId] = useState(lists[0]?.id ?? "");
 
   return (
-    <div className="mb-6 rounded-xl border border-zinc-800 bg-zinc-900/60 p-4">
+    <div className="mb-6 rounded-xl border border-border bg-panel/60 p-4">
       <div className="mb-3 text-xs uppercase tracking-wide text-zinc-400">New card</div>
       <div className="flex flex-col gap-3 md:flex-row">
         <input
-          className="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-white"
+          className="w-full rounded-lg border border-border-strong bg-panel-muted px-3 py-2 text-sm text-white"
           placeholder="Card title"
           value={draftTitle}
           onChange={(event) => setDraftTitle(event.target.value)}
         />
         <select
-          className="rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-white"
+          className="rounded-lg border border-border-strong bg-panel-muted px-3 py-2 text-sm text-white"
           value={draftListId}
           onChange={(event) => setDraftListId(event.target.value)}
         >
@@ -43,7 +43,7 @@ export default function CardComposer({
           ))}
         </select>
         <button
-          className="rounded-lg bg-emerald-400 px-4 py-2 text-sm font-semibold text-zinc-900"
+          className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground"
           disabled={isSaving || !draftTitle.trim() || !draftListId}
           type="button"
           onClick={async () => {
@@ -57,7 +57,7 @@ export default function CardComposer({
         </button>
         {onCancel ? (
           <button
-            className="rounded-lg border border-zinc-700 px-4 py-2 text-sm text-zinc-300"
+            className="rounded-lg border border-border-strong px-4 py-2 text-sm text-zinc-300"
             disabled={isSaving}
             type="button"
             onClick={onCancel}

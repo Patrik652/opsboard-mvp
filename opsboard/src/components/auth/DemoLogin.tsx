@@ -12,7 +12,7 @@ export default function DemoLogin() {
   return (
     <div className="flex flex-col gap-2">
       <button
-        className="rounded-xl border border-zinc-700 bg-zinc-900 px-6 py-3 font-semibold text-zinc-200 transition-colors hover:bg-zinc-800"
+        className="rounded-xl border border-border-strong bg-panel px-6 py-3 font-semibold text-zinc-200 transition-colors hover:bg-zinc-800"
         onClick={async () => {
           enterDemoMode();
           setStatus("Opening demo workspace...");

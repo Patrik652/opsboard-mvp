@@ -246,3 +246,67 @@ Result: 0 console errors / 0 page errors across all 6 tests.
 | `npm test -- --run` (vitest) | ✔ 24 files / 37 tests passed |
 
 No threshold change (`maxDiffPixelRatio 0.01` unchanged). Coverage: 3 routes × 2 viewports = 6 visual checks.
+
+---
+
+# Phase 3B — Semantic color token taxonomy (small safe slice, 2026-06-19)
+
+Goal: give humans + AI a stable surface/border/accent vocabulary so they stop mixing `zinc-*`/`emerald-*` by feel. Base: commit `06d1890`.
+
+## Token taxonomy added (`src/app/globals.css`, `@theme inline`)
+
+Each token is an **exact alias of the Tailwind primitive already in use** — values are not redesigned, so migrating utilities changes zero pixels.
+
+| Token | Alias of | Role |
+|---|---|---|
+| `--color-panel` | `--color-zinc-900` | card / panel surface (incl. `/60`) |
+| `--color-panel-muted` | `--color-zinc-950` | inset / input / shell-muted surface |
+| `--color-border` | `--color-zinc-800` | standard border / divider |
+| `--color-border-strong` | `--color-zinc-700` | input / emphasized border |
+| `--color-accent` | `--color-emerald-400` | brand accent (text + button bg) |
+| `--color-accent-foreground` | `--color-zinc-900` | text on accent surfaces |
+
+**Not added:** `--success` / `--warning` / `--danger`. Severity/status colors are semantically mixed (incident severity `low/med/high`, service status, error banners) and task-scoped to "leave if unclear" — deferred to a dedicated data-color slice.
+
+## Migrated usage categories (9 files)
+
+Migration boundary = **only components rendered on guardrail-covered routes** (`/`, `/boards`, `/incidents`), so every change is visually verified.
+
+- **surfaces:** `bg-zinc-900[/60]` → `bg-panel[/60]`, `bg-zinc-950` → `bg-panel-muted`
+- **borders:** `border-zinc-800` → `border-border`, `border-zinc-700` → `border-border-strong`
+- **accent:** brand `text-emerald-400` → `text-accent`; primary buttons `bg-emerald-400 … text-zinc-900` → `bg-accent … text-accent-foreground`
+
+Files: `app/page.tsx`, `auth/DemoLogin`, `layout/Sidebar`, `layout/Topbar`, `auth/RequireWorkspace`, `boards/BoardView`, `boards/BoardColumn`, `boards/CardComposer`, `incidents/IncidentList`. (`(app)/layout.tsx` was already on `bg-background` from Phase 2.)
+
+## Inventory before / after
+
+| Metric | Before | After |
+|---|---|---|
+| Primitive color utilities in `src` (`*.tsx`) | **225** | **174** |
+| Semantic token utilities in use | 0 | **51** |
+
+51 occurrences migrated (−22.7% primitive drift), 0 added back.
+
+## Remaining 174 primitives — why left
+
+| Category | ~count | Reason |
+|---|---|---|
+| Uncovered-route components (`AiPanel`, `ReliabilityOpsPanel`, `AnalyticsDashboard`, `status`, `audit`, `AuditTimeline`) | ~89 | Not yet covered by the visual guardrail — migrate in the next slice once baselines exist, so each change stays verified. |
+| `text-zinc-100..500` text scale | ~50 | No text-scale token in this taxonomy (surfaces/borders/accent only); out of scope. |
+| `GoogleLoginButton` `bg-emerald-500` CTA | 3 | Distinct accent shade (500, not 400) + `text-black`; aliasing to `--accent` (400) would shift pixels — left deliberately. |
+| `rose-*` / `red-*` / `amber-*` / `emerald-300/500` status & severity | ~32 | Data-semantic (severity, service status, error banners) — task §7: leave until a deliberate data-color taxonomy. |
+
+## Verification results
+
+| Command | Result |
+|---|---|
+| `npm run verify:visual` | ✔ **6 passed, baselines unchanged** — exact-alias migration = 0 pixel diff (semantic equivalence proven) |
+| `npm run lint` | ✔ pass (exit 0) |
+| `npm run build` | ✔ success — 11 static routes |
+| `npm test -- --run` (vitest) | ✔ 24 files / 37 tests passed |
+
+No threshold change, no baseline update (none was justified — pixels identical). One CSS gotcha hit and fixed during the slice: a `*/` sequence inside a `@theme` comment closed the comment early and broke PostCSS parsing; reworded.
+
+## Decision
+
+Semantic primitives land **before** Pencil/Figma, as intended — the token vocabulary is the thing that stops AI/Codex drifting between `zinc-*`/`emerald-*`. Next slice: extend baselines to `/status`,`/analytics`,`/ai`,`/operations`,`/audit`, then migrate their surfaces; separately, design the data-color taxonomy (`--success`/`--warning`/`--danger` + severity scale).
