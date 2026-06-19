@@ -63,3 +63,20 @@ jobs:
             opsboard/playwright-report/
           retention-days: 7
           if-no-files-found: ignore
+
+      # Sub-pixel font rasterization differs between a developer machine and the
+      # runner, so baselines must be generated here. On failure, regenerate them
+      # on the runner and publish as an artifact: download, commit, and the next
+      # run passes. See opsboard/docs/design-guardrail.md.
+      - name: Regenerate baselines on the runner
+        if: failure()
+        run: npm run verify:visual:update
+
+      - name: Upload runner-generated baselines
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: opsboard-runner-baselines
+          path: opsboard/tests/visual/__screenshots__/
+          retention-days: 1
+          if-no-files-found: ignore
