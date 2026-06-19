@@ -11,7 +11,7 @@ export default function IncidentsPage() {
     <section>
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-white">Incidents</h1>
-        <p className="text-sm text-zinc-400">Live reliability events and response state.</p>
+        <p className="text-sm text-text-muted">Live reliability events and response state.</p>
       </div>
       <IncidentList
         incidents={incidents}

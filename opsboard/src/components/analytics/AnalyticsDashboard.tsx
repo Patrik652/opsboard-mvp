@@ -19,7 +19,7 @@ export default function AnalyticsDashboard({
     <section>
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-white">Reliability Pulse</h1>
-        <p className="text-sm text-zinc-400">Signals that show operational health at a glance.</p>
+        <p className="text-sm text-text-muted">Signals that show operational health at a glance.</p>
       </div>
       {error ? (
         <div className="mb-4 rounded-lg border border-danger-muted/30 bg-danger-muted/10 px-4 py-3 text-sm text-danger">
@@ -27,21 +27,21 @@ export default function AnalyticsDashboard({
         </div>
       ) : null}
       {isLoading ? (
-        <div className="mb-4 rounded-xl border border-border bg-panel/60 p-4 text-sm text-zinc-400">
+        <div className="mb-4 rounded-xl border border-border bg-panel/60 p-4 text-sm text-text-muted">
           Loading reliability metrics...
         </div>
       ) : null}
       <div className="grid gap-4 md:grid-cols-3">
         <div className="rounded-xl border border-border bg-panel/60 p-5">
-          <div className="text-sm text-zinc-400">Cards in flight</div>
+          <div className="text-sm text-text-muted">Cards in flight</div>
           <div className="text-3xl font-semibold text-white">{metrics.totalCards}</div>
         </div>
         <div className="rounded-xl border border-border bg-panel/60 p-5">
-          <div className="text-sm text-zinc-400">Open incidents</div>
+          <div className="text-sm text-text-muted">Open incidents</div>
           <div className="text-3xl font-semibold text-white">{metrics.openIncidents}</div>
         </div>
         <div className="rounded-xl border border-border bg-panel/60 p-5">
-          <div className="text-sm text-zinc-400">Uptime</div>
+          <div className="text-sm text-text-muted">Uptime</div>
           <div className="text-3xl font-semibold text-success">{metrics.uptime}</div>
         </div>
       </div>

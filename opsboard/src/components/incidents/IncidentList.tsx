@@ -39,7 +39,7 @@ export default function IncidentList({
     <div className="space-y-4">
       <div className="flex items-center justify-end">
         <button
-          className="rounded-lg border border-border-strong px-3 py-2 text-sm text-zinc-200"
+          className="rounded-lg border border-border-strong px-3 py-2 text-sm text-text-body"
           disabled={isLoading || isSaving || !onCreateIncident}
           type="button"
           onClick={() => setShowComposer(true)}
@@ -50,7 +50,7 @@ export default function IncidentList({
 
       {showComposer ? (
         <div className="rounded-xl border border-border bg-panel/60 p-4">
-          <div className="mb-3 text-xs uppercase tracking-wide text-zinc-400">New incident</div>
+          <div className="mb-3 text-xs uppercase tracking-wide text-text-muted">New incident</div>
           <div className="grid gap-3">
             <input
               className="w-full rounded-lg border border-border-strong bg-panel-muted px-3 py-2 text-sm text-white"
@@ -59,7 +59,7 @@ export default function IncidentList({
               onChange={(event) => setDraftTitle(event.target.value)}
             />
             <div className="flex flex-col gap-2">
-              <label className="text-xs uppercase tracking-wide text-zinc-400" htmlFor="incident-severity">
+              <label className="text-xs uppercase tracking-wide text-text-muted" htmlFor="incident-severity">
                 Severity
               </label>
               <select
@@ -103,7 +103,7 @@ export default function IncidentList({
                 {isSaving ? "Saving..." : "Create incident"}
               </button>
               <button
-                className="rounded-lg border border-border-strong px-4 py-2 text-sm text-zinc-300"
+                className="rounded-lg border border-border-strong px-4 py-2 text-sm text-text-secondary"
                 disabled={isSaving}
                 type="button"
                 onClick={() => setShowComposer(false)}
@@ -122,7 +122,7 @@ export default function IncidentList({
       ) : null}
 
       {isLoading ? (
-        <div className="rounded-xl border border-border bg-panel/60 p-4 text-sm text-zinc-400">
+        <div className="rounded-xl border border-border bg-panel/60 p-4 text-sm text-text-muted">
           Loading incidents...
         </div>
       ) : null}
@@ -131,10 +131,10 @@ export default function IncidentList({
         <div key={incident.id} className="rounded-xl border border-border bg-panel/60 p-4">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-sm text-zinc-400">{incident.state.toUpperCase()}</div>
+              <div className="text-sm text-text-muted">{incident.state.toUpperCase()}</div>
               <h2 className="text-lg font-semibold text-white">{incident.title}</h2>
               {incident.summary ? (
-                <p className="mt-2 text-sm text-zinc-400">{incident.summary}</p>
+                <p className="mt-2 text-sm text-text-muted">{incident.summary}</p>
               ) : null}
             </div>
             <span className={`rounded-full px-3 py-1 text-xs ${severityStyles[incident.severity]}`}>
@@ -144,7 +144,7 @@ export default function IncidentList({
           <div className="mt-4 flex flex-wrap gap-3">
             {incident.state === "open" ? (
               <button
-                className="rounded-lg border border-border-strong px-3 py-2 text-sm text-zinc-200"
+                className="rounded-lg border border-border-strong px-3 py-2 text-sm text-text-body"
                 disabled={isSaving || !onUpdateIncidentState}
                 type="button"
                 onClick={async () => {

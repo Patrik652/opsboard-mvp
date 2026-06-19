@@ -544,3 +544,62 @@ No baseline update, no threshold change, no helper indirection added. Cumulative
 ## Decision
 
 Severity/health/risk now use semantic roles (`success`/`warning`/`danger`/`critical`/`success-soft`) for every repeated, exact-shade case, with the red-vs-rose distinction preserved as intended. Remaining colors are deliberate one-offs or brand. **Phase 5** (text-scale tokens for `text-zinc-100..500`) is the final large block.
+
+---
+
+# Phase 5A — Semantic text (grayscale) tokens (2026-06-19)
+
+Goal: tokenize the last big block — the `text-zinc-100..500` grayscale text scale — with **exact aliases only** (0 pixel diff). **Decision (per task): do NOT consolidate shades** — that would change visual hierarchy and require baseline updates. Base: commit `07d3d3a`.
+
+## Taxonomy added (`globals.css`, exact aliases — one token per shade)
+
+| Token | Alias of | Utility | Role | Uses |
+|---|---|---|---|---|
+| `--color-text-primary` | `zinc-100` | `text-text-primary` | brightest body / shell text | 6 |
+| `--color-text-body` | `zinc-200` | `text-text-body` | default body copy | 12 |
+| `--color-text-secondary` | `zinc-300` | `text-text-secondary` | secondary text | 8 |
+| `--color-text-muted` | `zinc-400` | `text-text-muted` | muted labels / helper text | 32 |
+| `--color-text-subtle` | `zinc-500` | `text-text-subtle` | subtle metadata / captions | 7 |
+
+Each shade is distinct and repeated → one token each (no shade collapsed, per the no-consolidation decision). The `text-text-*` utility name is the Tailwind v4 result of a `--color-text-*` token (color-utility prefix `text-` + token name `text-*`); it is intentional and unambiguous.
+
+## Inventory before / after
+
+| Metric | Before | After |
+|---|---|---|
+| Primitive color utilities in `src` (`*.tsx`, `*-[0-9]00`) | **69** | **4** |
+| Semantic text-token utilities in use | 0 | **65** |
+
+65 occurrences migrated (1:1 shade→token, exact-equal), 0 added back.
+
+## Files migrated (16)
+
+All components/pages carrying grayscale text: `app/page.tsx`, `app/(app)/{status,audit,incidents}/page.tsx`, `components/layout/{Sidebar,Topbar}`, `components/boards/{BoardColumn,BoardView,CardComposer}`, `components/incidents/IncidentList`, `components/audit/AuditTimeline`, `components/ai/AiPanel`, `components/analytics/AnalyticsDashboard`, `components/operations/ReliabilityOpsPanel`, `components/auth/{RequireWorkspace,DemoLogin}`. Pure brightness→role mapping; every usage of a given shade serves the same hierarchical text role.
+
+## Left primitive (remaining 4) + reason
+
+| Usage | shade | Reason |
+|---|---|---|
+| `text-white` headings / big numbers | white (23×) | Not a `-[0-9]` shade; a clear "heading/emphasis" role distinct from `--foreground`. Candidate for a `--color-text-strong` token in **Phase 5B** — deferred to keep this phase exact-alias-only and avoid debating heading hierarchy. |
+| `text-black` CTA label | black (1×) | `GoogleLoginButton` brand CTA — brand, not text scale. |
+| `text-yellow-300` (AI caution) | yellow-300 | one-off notice (Phase 4B). |
+| `text-rose-300` (inline form error) | rose-300 | one-off (Phase 4B). |
+| `bg-zinc-800` (`DemoLogin` hover) | zinc-800 | lone surface with no matching token; not text. |
+| `bg-emerald-500` + `hover:bg-emerald-400` CTA | emerald | `GoogleLoginButton` brand CTA (Phase 4B). |
+
+(`text-white`/`text-black` are not counted in the 4 — they are non-numbered utilities.)
+
+## Verification results
+
+| Command | Result |
+|---|---|
+| `npm run verify:visual` | ✔ **16 passed, baselines unchanged** — exact-alias migration = 0 pixel diff (confirms `text-text-*` utilities resolve to the original shades) |
+| `npm run lint` | ✔ pass (exit 0) |
+| `npm run build` | ✔ success — 11 static routes |
+| `npm test -- --run` (vitest) | ✔ 39 passed / 25 files |
+
+No baseline update, no threshold change, no shade consolidation. **Cumulative drift: 225 → 4 numbered-shade primitives (−98%)** across phases 3B–5A.
+
+## Decision
+
+The grayscale text scale now speaks in `primary`/`body`/`secondary`/`muted`/`subtle` roles. Almost all numbered-shade primitives are eliminated; the remaining are deliberate one-offs (yellow/rose notice, lone hover surface) or brand CTA, plus `text-white` headings. **Phase 5B** (optional): decide whether to tokenize `text-white` headings as `--color-text-strong` and whether any hierarchy consolidation is wanted — likely small. After that, the natural next step is **CI wiring** (run `verify:visual` + `lint` + `build` + `test` on every change) and a short runbook, so the guardrail is enforced automatically rather than by hand.

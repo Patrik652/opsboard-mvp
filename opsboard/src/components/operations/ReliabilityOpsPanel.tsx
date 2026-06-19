@@ -122,7 +122,7 @@ export default function ReliabilityOpsPanel({
     <section>
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-white">Operational readiness</h1>
-        <p className="text-sm text-zinc-400">
+        <p className="text-sm text-text-muted">
           Monitoring, audit, and disaster recovery controls for production hardening.
         </p>
       </div>
@@ -134,27 +134,27 @@ export default function ReliabilityOpsPanel({
       ) : null}
 
       {isLoading ? (
-        <div className="mb-4 rounded-xl border border-border bg-panel/60 p-4 text-sm text-zinc-400">
+        <div className="mb-4 rounded-xl border border-border bg-panel/60 p-4 text-sm text-text-muted">
           Loading operational workspace...
         </div>
       ) : null}
 
       <div className="grid gap-4 md:grid-cols-3">
         <div className="rounded-xl border border-border bg-panel/60 p-4">
-          <div className="text-sm text-zinc-400">Telemetry events</div>
+          <div className="text-sm text-text-muted">Telemetry events</div>
           <div className="mt-2 text-3xl font-semibold text-white">{telemetrySummary.total}</div>
-          <div className="mt-2 text-xs text-zinc-500">
+          <div className="mt-2 text-xs text-text-subtle">
             Warn/Error: {telemetrySummary.byLevel.warn + telemetrySummary.byLevel.error}
           </div>
         </div>
         <div className="rounded-xl border border-border bg-panel/60 p-4">
-          <div className="text-sm text-zinc-400">Audit entries</div>
+          <div className="text-sm text-text-muted">Audit entries</div>
           <div className="mt-2 text-3xl font-semibold text-white">{metrics.auditEntries}</div>
-          <div className="mt-2 text-xs text-zinc-500">Persistent workspace timeline</div>
+          <div className="mt-2 text-xs text-text-subtle">Persistent workspace timeline</div>
         </div>
         <div className="rounded-xl border border-border bg-panel/60 p-4">
-          <div className="text-sm text-zinc-400">Latest snapshot</div>
-          <div className="mt-2 text-sm text-zinc-200">
+          <div className="text-sm text-text-muted">Latest snapshot</div>
+          <div className="mt-2 text-sm text-text-body">
             {latestSnapshot
               ? formatTimestamp(latestSnapshot.createdAt)
               : "No snapshot yet"}
@@ -163,8 +163,8 @@ export default function ReliabilityOpsPanel({
       </div>
 
       <div className="mt-4 rounded-xl border border-border bg-panel/60 p-4">
-        <div className="text-sm text-zinc-400">Live workspace posture</div>
-        <div className="mt-2 flex flex-wrap gap-4 text-sm text-zinc-200">
+        <div className="text-sm text-text-muted">Live workspace posture</div>
+        <div className="mt-2 flex flex-wrap gap-4 text-sm text-text-body">
           <span>Open incidents: {metrics.openIncidents}</span>
           <span>Cards in flight: {metrics.totalCards}</span>
           <span>Estimated uptime: {metrics.uptime}</span>
@@ -173,7 +173,7 @@ export default function ReliabilityOpsPanel({
 
       <div className="mt-6 flex flex-wrap gap-3">
         <button
-          className="rounded-lg border border-border-strong px-4 py-2 text-sm text-zinc-100"
+          className="rounded-lg border border-border-strong px-4 py-2 text-sm text-text-primary"
           disabled={isWorking}
           type="button"
           onClick={recordSyntheticAlert}
@@ -191,9 +191,9 @@ export default function ReliabilityOpsPanel({
       </div>
 
       <div className="mt-6 rounded-xl border border-border bg-panel/60 p-4">
-        <div className="mb-2 text-sm text-zinc-300">Snapshot payload</div>
+        <div className="mb-2 text-sm text-text-secondary">Snapshot payload</div>
         <textarea
-          className="h-44 w-full rounded-lg border border-border-strong bg-panel-muted px-3 py-2 font-mono text-xs text-zinc-200"
+          className="h-44 w-full rounded-lg border border-border-strong bg-panel-muted px-3 py-2 font-mono text-xs text-text-body"
           value={snapshotJson}
           readOnly
         />

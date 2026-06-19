@@ -68,20 +68,20 @@ export default function AiPanel() {
     <section>
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-white">AI Operations Copilot</h1>
-        <p className="text-sm text-zinc-400">
+        <p className="text-sm text-text-muted">
           Multi-agent workflow for incident triage, summary drafting, and action planning.
         </p>
       </div>
 
       <div className="rounded-2xl border border-border bg-panel/60 p-6">
-        <div className="text-sm text-zinc-300">Agent workflow</div>
+        <div className="text-sm text-text-secondary">Agent workflow</div>
         {error ? (
           <div className="mt-4 rounded-lg border border-danger-muted/30 bg-danger-muted/10 px-4 py-3 text-sm text-danger">
             {error}
           </div>
         ) : null}
         {isLoading ? (
-          <div className="mt-4 rounded-lg border border-border bg-panel-muted px-4 py-3 text-sm text-zinc-400">
+          <div className="mt-4 rounded-lg border border-border bg-panel-muted px-4 py-3 text-sm text-text-muted">
             Loading workspace for deterministic analysis...
           </div>
         ) : null}
@@ -117,13 +117,13 @@ export default function AiPanel() {
             <div className={`mt-2 text-sm font-semibold ${formatRiskTone(report.risk.score)}`}>
               Risk score: {report.risk.score} ({report.risk.level.toUpperCase()})
             </div>
-            <div className="mt-3 text-sm text-zinc-200">{report.summary.headline}</div>
-            <p className="mt-2 text-sm text-zinc-300">{report.summary.narrative}</p>
+            <div className="mt-3 text-sm text-text-body">{report.summary.headline}</div>
+            <p className="mt-2 text-sm text-text-secondary">{report.summary.narrative}</p>
           </div>
 
           <div className="rounded-xl border border-border bg-panel/60 p-4">
             <h2 className="text-base font-semibold text-white">Recommended actions</h2>
-            <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-zinc-200">
+            <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-text-body">
               {report.actionPlan.immediate.map((step) => (
                 <li key={step}>{step}</li>
               ))}
@@ -135,8 +135,8 @@ export default function AiPanel() {
             <div className="mt-3 grid gap-3 md:grid-cols-3">
               {report.trace.map((item) => (
                 <div key={item.agent} className="rounded-lg border border-border bg-panel-muted p-3">
-                  <div className="text-xs uppercase tracking-wide text-zinc-500">{item.agent}</div>
-                  <div className="mt-2 text-sm text-zinc-200">{item.durationMs}ms</div>
+                  <div className="text-xs uppercase tracking-wide text-text-subtle">{item.agent}</div>
+                  <div className="mt-2 text-sm text-text-body">{item.durationMs}ms</div>
                 </div>
               ))}
             </div>

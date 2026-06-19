@@ -45,6 +45,17 @@
   --color-critical: var(--color-red-300);
   --color-critical-muted: var(--color-red-500);
 
+  /* Grayscale text scale. One token per existing shade (exact aliases), so
+     migration preserves the current visual hierarchy exactly - no shade is
+     collapsed into another. Headings keep text-white; the GoogleLoginButton
+     CTA keeps text-black (brand). Distinct from --foreground (#f2f4f8), the
+     default body color set on <body>. */
+  --color-text-primary: var(--color-zinc-100);
+  --color-text-body: var(--color-zinc-200);
+  --color-text-secondary: var(--color-zinc-300);
+  --color-text-muted: var(--color-zinc-400);
+  --color-text-subtle: var(--color-zinc-500);
+
   --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
 }

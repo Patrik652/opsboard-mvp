@@ -13,7 +13,7 @@ export default function Home() {
           <h1 className="text-4xl font-semibold leading-tight sm:text-6xl">
             Command your work. Prove your reliability.
           </h1>
-          <p className="mt-6 text-lg text-zinc-300">
+          <p className="mt-6 text-lg text-text-secondary">
             A Trello-style operations board fused with incident response,
             audit trails, and live metrics. Built for teams who ship fast and stay
             stable.

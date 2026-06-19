@@ -11,7 +11,7 @@ export default function AuditPage() {
     <section>
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-white">Audit log</h1>
-        <p className="text-sm text-zinc-400">Every action captured for compliance and review.</p>
+        <p className="text-sm text-text-muted">Every action captured for compliance and review.</p>
       </div>
       {error ? (
         <div className="mb-4 rounded-lg border border-danger-muted/30 bg-danger-muted/10 px-4 py-3 text-sm text-danger">
@@ -19,7 +19,7 @@ export default function AuditPage() {
         </div>
       ) : null}
       {isLoading ? (
-        <div className="mb-4 rounded-xl border border-border bg-panel/60 p-4 text-sm text-zinc-400">
+        <div className="mb-4 rounded-xl border border-border bg-panel/60 p-4 text-sm text-text-muted">
           Loading audit history...
         </div>
       ) : null}

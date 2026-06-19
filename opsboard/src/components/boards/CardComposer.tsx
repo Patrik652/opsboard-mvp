@@ -23,7 +23,7 @@ export default function CardComposer({
 
   return (
     <div className="mb-6 rounded-xl border border-border bg-panel/60 p-4">
-      <div className="mb-3 text-xs uppercase tracking-wide text-zinc-400">New card</div>
+      <div className="mb-3 text-xs uppercase tracking-wide text-text-muted">New card</div>
       <div className="flex flex-col gap-3 md:flex-row">
         <input
           className="w-full rounded-lg border border-border-strong bg-panel-muted px-3 py-2 text-sm text-white"
@@ -57,7 +57,7 @@ export default function CardComposer({
         </button>
         {onCancel ? (
           <button
-            className="rounded-lg border border-border-strong px-4 py-2 text-sm text-zinc-300"
+            className="rounded-lg border border-border-strong px-4 py-2 text-sm text-text-secondary"
             disabled={isSaving}
             type="button"
             onClick={onCancel}

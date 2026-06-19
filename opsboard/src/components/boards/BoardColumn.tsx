@@ -17,18 +17,18 @@ export default function BoardColumn({
 }: BoardColumnProps) {
   return (
     <div className="rounded-xl border border-border bg-panel/60 p-4">
-      <div className="mb-3 text-sm uppercase tracking-wide text-zinc-400">{list.name}</div>
+      <div className="mb-3 text-sm uppercase tracking-wide text-text-muted">{list.name}</div>
       <div className="space-y-3">
         {cards.map((card) => (
           <div key={card.id} className="rounded-lg border border-border bg-panel-muted p-3">
-            <div className="text-sm font-medium text-zinc-100">{card.title}</div>
-            <div className="mt-2 text-xs text-zinc-500">Priority: {card.priority}</div>
+            <div className="text-sm font-medium text-text-primary">{card.title}</div>
+            <div className="mt-2 text-xs text-text-subtle">Priority: {card.priority}</div>
             <div className="mt-3">
               <label className="sr-only" htmlFor={`${card.id}-list`}>
                 Move {card.title}
               </label>
               <select
-                className="w-full rounded-lg border border-border-strong bg-panel px-3 py-2 text-xs text-zinc-200"
+                className="w-full rounded-lg border border-border-strong bg-panel px-3 py-2 text-xs text-text-body"
                 disabled={isSaving || !onMoveCard}
                 id={`${card.id}-list`}
                 value={card.listId}
