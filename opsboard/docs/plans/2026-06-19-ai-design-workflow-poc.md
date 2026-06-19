@@ -478,3 +478,69 @@ No baseline update, no threshold change. Cumulative drift: **225 → 76 primitiv
 ## Decision
 
 Status/severity/health now speak in `success`/`warning`/`danger` roles for every exact-shade case. The remaining data colors are a real semantic decision (red-vs-rose severity ramp, yellow caution, emerald-200 messages) → **Phase 4B**: decide the severity scale + optionally extract `getSeverityTone()`/`getHealthTone()` helpers with unit tests. **Phase 5** (text-scale tokens) is the other open thread.
+
+---
+
+# Phase 4B — Clarify severity color roles (2026-06-19)
+
+Goal: remove the remaining *repeated* data-state primitives via narrow severity-specific tokens, preserving pixels. **Decision (carried from the task): do NOT unify the red and rose ramps** — that would be a redesign + baseline change. Base: commit `5ece88f`.
+
+## Token decision table
+
+| Token | Decision | Alias / shade | Why |
+|---|---|---|---|
+| `--color-critical` | **ADD** | `red-300` | incident HIGH severity + AI high-risk text — repeated (2×), clear "critical" role, distinct red ramp from `danger` (rose) |
+| `--color-critical-muted` | **ADD** | `red-500` | completes the severity scale (`bg-critical-muted/10` for the HIGH chip) uniformly with low/med |
+| `--color-success-soft` | **ADD** | `emerald-200` | subtle confirmation/message text — repeated 4× (AiPanel ×2, DemoLogin, GoogleLoginButton status), distinct from `success` (emerald-300 badges/metrics) |
+| `--color-notice` | **NOT added** | `yellow-300` | single use (AI score 35–59); adding a token for a one-off = explosion. Left primitive, documented. |
+| `--color-danger-strong` | **NOT added** | `rose-300` | single use (CardComposer inline error); one-off, left primitive. |
+
+No red/rose unification, no baseline change.
+
+## Helpers — evaluated, none extracted
+
+Per the constraint "extract helpers only when duplication is real": the three tone maps are each a **single-source, single-file** definition with **no cross-file duplication** —
+`severityStyles` (IncidentList `Record<Severity, string>`), `overallTone`/`serviceTone` (status/page maps), `formatRiskTone` (AiPanel function). Extracting them to shared modules would add indirection without removing duplication, so **no helpers were extracted and no helper tests added**. `severityStyles` is already exhaustively type-checked by `Record<Incident["severity"], …>`. (If a second component ever needs incident severity styling, extract `getIncidentSeverityTone()` then.)
+
+After migration the maps read cleanly in token terms:
+- `severityStyles`: `low → text-success bg-success-muted/10`, `med → text-warning bg-warning-muted/10`, `high → text-critical bg-critical-muted/10`
+- `formatRiskTone`: `≥80 → text-critical`, `≥60 → text-warning`, `≥35 → text-yellow-300` (notice one-off), `else → text-success`
+
+## Inventory before / after
+
+| Metric | Before | After |
+|---|---|---|
+| Primitive color utilities in `src` (`*.tsx`) | **76** | **69** |
+| Semantic token utilities in use (cumulative) | — | grows by 7 |
+
+7 occurrences migrated (exact-equal), 0 added back.
+
+## Migrated meanings / files
+
+- **critical** (`text-red-300`→`text-critical`, `bg-red-500/10`→`bg-critical-muted/10`): `IncidentList` HIGH severity chip, `AiPanel` high-risk tone.
+- **success-soft** (`text-emerald-200`→`text-success-soft`): `AiPanel` status message + success panel body, `DemoLogin` status, `GoogleLoginButton` status message (the message text only — the `bg-emerald-500` brand CTA is untouched).
+
+## Remaining data colors + reason (4)
+
+| Usage | shade | Reason left |
+|---|---|---|
+| AI caution level (`formatRiskTone` 35–59) | `text-yellow-300` | one-off 4th tone; `--notice` would be token explosion |
+| `CardComposer` inline form error | `text-rose-300` | one-off shade (≠ danger rose-200); not repeated |
+| `GoogleLoginButton` primary CTA | `bg-emerald-500` + `hover:bg-emerald-400` | brand CTA, not a data state — belongs to brand/accent, left as-is |
+
+All non-text **repeated** data-state colors are now tokenized. The remaining large block is the grayscale **text scale** (`text-zinc-100..500`, ~65) → Phase 5.
+
+## Verification results
+
+| Command | Result |
+|---|---|
+| `npm run verify:visual` | ✔ **16 passed, baselines unchanged** — exact-alias migration = 0 pixel diff (the `/incidents` baseline actually renders a HIGH-severity chip, so `critical` is visually verified) |
+| `npm run lint` | ✔ pass (exit 0) |
+| `npm run build` | ✔ success — 11 static routes |
+| `npm test -- --run` (vitest) | ✔ 39 passed / 25 files |
+
+No baseline update, no threshold change, no helper indirection added. Cumulative drift: **225 → 69 primitives (−69%)**.
+
+## Decision
+
+Severity/health/risk now use semantic roles (`success`/`warning`/`danger`/`critical`/`success-soft`) for every repeated, exact-shade case, with the red-vs-rose distinction preserved as intended. Remaining colors are deliberate one-offs or brand. **Phase 5** (text-scale tokens for `text-zinc-100..500`) is the final large block.

@@ -22,7 +22,7 @@ export default function DemoLogin() {
       >
         Open demo workspace
       </button>
-      {status ? <div className="text-xs text-emerald-200">{status}</div> : null}
+      {status ? <div className="text-xs text-success-soft">{status}</div> : null}
     </div>
   );
 }

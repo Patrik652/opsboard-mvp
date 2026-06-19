@@ -8,7 +8,7 @@ import { telemetryClient } from "@/features/platform/client";
 import { useWorkspaceSnapshot } from "@/features/workspace/useWorkspaceSnapshot";
 
 function formatRiskTone(score: number): string {
-  if (score >= 80) return "text-red-300";
+  if (score >= 80) return "text-critical";
   if (score >= 60) return "text-warning";
   if (score >= 35) return "text-yellow-300";
   return "text-success";
@@ -107,7 +107,7 @@ export default function AiPanel() {
             Run workflow
           </button>
         </div>
-        {status ? <div className="mt-4 text-xs text-emerald-200">{status}</div> : null}
+        {status ? <div className="mt-4 text-xs text-success-soft">{status}</div> : null}
       </div>
 
       {report ? (
@@ -144,7 +144,7 @@ export default function AiPanel() {
         </div>
       ) : null}
 
-      <div className="mt-6 rounded-xl border border-success-muted/30 bg-success-muted/5 p-4 text-xs text-emerald-200">
+      <div className="mt-6 rounded-xl border border-success-muted/30 bg-success-muted/5 p-4 text-xs text-success-soft">
         Copilot is deterministic by default and derives recommendations from the live workspace snapshot.
       </div>
     </section>

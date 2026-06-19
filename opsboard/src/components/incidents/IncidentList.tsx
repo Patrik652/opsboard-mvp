@@ -6,7 +6,7 @@ import type { Incident, IncidentState, Severity } from "@/features/data/model";
 const severityStyles: Record<Incident["severity"], string> = {
   low: "text-success bg-success-muted/10",
   med: "text-warning bg-warning-muted/10",
-  high: "text-red-300 bg-red-500/10",
+  high: "text-critical bg-critical-muted/10",
 };
 
 type IncidentListProps = {

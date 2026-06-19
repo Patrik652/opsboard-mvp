@@ -31,10 +31,19 @@
      distinct red ramp (not rose) and stays primitive for now (see Phase 4B). */
   --color-success: var(--color-emerald-300);
   --color-success-muted: var(--color-emerald-500);
+  --color-success-soft: var(--color-emerald-200);
   --color-warning: var(--color-amber-300);
   --color-warning-muted: var(--color-amber-500);
   --color-danger: var(--color-rose-200);
   --color-danger-muted: var(--color-rose-500);
+
+  /* Critical = incident HIGH severity / AI high-risk. Deliberately a distinct
+     red ramp from danger (rose) so existing pixels are preserved - unifying
+     red and rose would be a redesign + baseline change (see Phase 4B note).
+     success-soft (emerald-200, above) is the subtle confirmation/message
+     shade, distinct from success (emerald-300) used for badges and metrics. */
+  --color-critical: var(--color-red-300);
+  --color-critical-muted: var(--color-red-500);
 
   --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
