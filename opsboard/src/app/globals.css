@@ -1,4 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -12,8 +11,52 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Semantic surface/border/accent tokens. Each is an exact alias of the
+     Tailwind primitive already used across the app, so migrating utilities
+     changes no pixels - it only gives humans and AI a stable vocabulary
+     instead of picking zinc or emerald shades by feel. Not a redesign. */
+  --color-panel: var(--color-zinc-900);
+  --color-panel-muted: var(--color-zinc-950);
+  --color-border: var(--color-zinc-800);
+  --color-border-strong: var(--color-zinc-700);
+  --color-accent: var(--color-emerald-400);
+  --color-accent-foreground: var(--color-zinc-900);
+
+  /* Data-state tokens (status / severity / health). Each maps a domain role
+     to the exact shade already used: foreground shade for text, plus a
+     "-muted" base used only with opacity for tints and borders. Exact
+     aliases, so migration changes no pixels. Incident HIGH severity uses a
+     distinct red ramp (not rose) and stays primitive for now (see Phase 4B). */
+  --color-success: var(--color-emerald-300);
+  --color-success-muted: var(--color-emerald-500);
+  --color-success-soft: var(--color-emerald-200);
+  --color-warning: var(--color-amber-300);
+  --color-warning-muted: var(--color-amber-500);
+  --color-danger: var(--color-rose-200);
+  --color-danger-muted: var(--color-rose-500);
+
+  /* Critical = incident HIGH severity / AI high-risk. Deliberately a distinct
+     red ramp from danger (rose) so existing pixels are preserved - unifying
+     red and rose would be a redesign + baseline change (see Phase 4B note).
+     success-soft (emerald-200, above) is the subtle confirmation/message
+     shade, distinct from success (emerald-300) used for badges and metrics. */
+  --color-critical: var(--color-red-300);
+  --color-critical-muted: var(--color-red-500);
+
+  /* Grayscale text scale. One token per existing shade (exact aliases), so
+     migration preserves the current visual hierarchy exactly - no shade is
+     collapsed into another. Headings keep text-white; the GoogleLoginButton
+     CTA keeps text-black (brand). Distinct from --foreground (#f2f4f8), the
+     default body color set on <body>. */
+  --color-text-primary: var(--color-zinc-100);
+  --color-text-body: var(--color-zinc-200);
+  --color-text-secondary: var(--color-zinc-300);
+  --color-text-muted: var(--color-zinc-400);
+  --color-text-subtle: var(--color-zinc-500);
+
+  --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, SFMono-Regular, monospace;
 }
 
 body {

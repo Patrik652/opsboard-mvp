@@ -1,0 +1,7 @@
+/* Hide the Next.js dev overlay / dev-tools badge so the visual baseline is
+   stable between `npm run dev` (overlay present) and any other run. */
+nextjs-portal,
+[data-nextjs-toast],
+[data-nextjs-dev-tools-button] {
+  display: none !important;
+}

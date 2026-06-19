@@ -4,9 +4,9 @@ import { useState } from "react";
 import type { Incident, IncidentState, Severity } from "@/features/data/model";
 
 const severityStyles: Record<Incident["severity"], string> = {
-  low: "text-emerald-300 bg-emerald-500/10",
-  med: "text-amber-300 bg-amber-500/10",
-  high: "text-red-300 bg-red-500/10",
+  low: "text-success bg-success-muted/10",
+  med: "text-warning bg-warning-muted/10",
+  high: "text-critical bg-critical-muted/10",
 };
 
 type IncidentListProps = {
@@ -39,7 +39,7 @@ export default function IncidentList({
     <div className="space-y-4">
       <div className="flex items-center justify-end">
         <button
-          className="rounded-lg border border-zinc-700 px-3 py-2 text-sm text-zinc-200"
+          className="rounded-lg border border-border-strong px-3 py-2 text-sm text-text-body"
           disabled={isLoading || isSaving || !onCreateIncident}
           type="button"
           onClick={() => setShowComposer(true)}
@@ -49,22 +49,22 @@ export default function IncidentList({
       </div>
 
       {showComposer ? (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-4">
-          <div className="mb-3 text-xs uppercase tracking-wide text-zinc-400">New incident</div>
+        <div className="rounded-xl border border-border bg-panel/60 p-4">
+          <div className="mb-3 text-xs uppercase tracking-wide text-text-muted">New incident</div>
           <div className="grid gap-3">
             <input
-              className="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-white"
+              className="w-full rounded-lg border border-border-strong bg-panel-muted px-3 py-2 text-sm text-white"
               placeholder="Incident title"
               value={draftTitle}
               onChange={(event) => setDraftTitle(event.target.value)}
             />
             <div className="flex flex-col gap-2">
-              <label className="text-xs uppercase tracking-wide text-zinc-400" htmlFor="incident-severity">
+              <label className="text-xs uppercase tracking-wide text-text-muted" htmlFor="incident-severity">
                 Severity
               </label>
               <select
                 id="incident-severity"
-                className="rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-white"
+                className="rounded-lg border border-border-strong bg-panel-muted px-3 py-2 text-sm text-white"
                 value={draftSeverity}
                 onChange={(event) => setDraftSeverity(event.target.value as Severity)}
               >
@@ -74,14 +74,14 @@ export default function IncidentList({
               </select>
             </div>
             <textarea
-              className="min-h-24 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-white"
+              className="min-h-24 w-full rounded-lg border border-border-strong bg-panel-muted px-3 py-2 text-sm text-white"
               placeholder="Impact summary"
               value={draftSummary}
               onChange={(event) => setDraftSummary(event.target.value)}
             />
             <div className="flex flex-wrap gap-3">
               <button
-                className="rounded-lg bg-emerald-400 px-4 py-2 text-sm font-semibold text-zinc-900"
+                className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground"
                 disabled={isSaving || !draftTitle.trim() || !onCreateIncident}
                 type="button"
                 onClick={async () => {
@@ -103,7 +103,7 @@ export default function IncidentList({
                 {isSaving ? "Saving..." : "Create incident"}
               </button>
               <button
-                className="rounded-lg border border-zinc-700 px-4 py-2 text-sm text-zinc-300"
+                className="rounded-lg border border-border-strong px-4 py-2 text-sm text-text-secondary"
                 disabled={isSaving}
                 type="button"
                 onClick={() => setShowComposer(false)}
@@ -116,25 +116,25 @@ export default function IncidentList({
       ) : null}
 
       {error ? (
-        <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+        <div className="rounded-lg border border-danger-muted/30 bg-danger-muted/10 px-4 py-3 text-sm text-danger">
           {error}
         </div>
       ) : null}
 
       {isLoading ? (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-4 text-sm text-zinc-400">
+        <div className="rounded-xl border border-border bg-panel/60 p-4 text-sm text-text-muted">
           Loading incidents...
         </div>
       ) : null}
 
       {incidents.map((incident) => (
-        <div key={incident.id} className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-4">
+        <div key={incident.id} className="rounded-xl border border-border bg-panel/60 p-4">
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-sm text-zinc-400">{incident.state.toUpperCase()}</div>
+              <div className="text-sm text-text-muted">{incident.state.toUpperCase()}</div>
               <h2 className="text-lg font-semibold text-white">{incident.title}</h2>
               {incident.summary ? (
-                <p className="mt-2 text-sm text-zinc-400">{incident.summary}</p>
+                <p className="mt-2 text-sm text-text-muted">{incident.summary}</p>
               ) : null}
             </div>
             <span className={`rounded-full px-3 py-1 text-xs ${severityStyles[incident.severity]}`}>
@@ -144,7 +144,7 @@ export default function IncidentList({
           <div className="mt-4 flex flex-wrap gap-3">
             {incident.state === "open" ? (
               <button
-                className="rounded-lg border border-zinc-700 px-3 py-2 text-sm text-zinc-200"
+                className="rounded-lg border border-border-strong px-3 py-2 text-sm text-text-body"
                 disabled={isSaving || !onUpdateIncidentState}
                 type="button"
                 onClick={async () => {
@@ -160,7 +160,7 @@ export default function IncidentList({
             ) : null}
             {incident.state !== "resolved" ? (
               <button
-                className="rounded-lg bg-emerald-400 px-3 py-2 text-sm font-semibold text-zinc-900"
+                className="rounded-lg bg-accent px-3 py-2 text-sm font-semibold text-accent-foreground"
                 disabled={isSaving || !onUpdateIncidentState}
                 type="button"
                 onClick={async () => {

@@ -37,7 +37,7 @@ export default function BoardView({
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-semibold text-white">{title}</h1>
         <button
-          className="rounded-lg border border-zinc-700 px-3 py-2 text-sm text-zinc-200"
+          className="rounded-lg border border-border-strong px-3 py-2 text-sm text-text-body"
           disabled={isLoading || !onCreateCard || lists.length === 0}
           type="button"
           onClick={() => setShowComposer(true)}
@@ -67,13 +67,13 @@ export default function BoardView({
       ) : null}
 
       {error ? (
-        <div className="mb-4 rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+        <div className="mb-4 rounded-lg border border-danger-muted/30 bg-danger-muted/10 px-4 py-3 text-sm text-danger">
           {error}
         </div>
       ) : null}
 
       {isLoading ? (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-4 text-sm text-zinc-400">
+        <div className="rounded-xl border border-border bg-panel/60 p-4 text-sm text-text-muted">
           Loading board workspace...
         </div>
       ) : null}
