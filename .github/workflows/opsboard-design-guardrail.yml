@@ -1,0 +1,65 @@
+name: opsboard design guardrail
+
+# Enforces Path A for every UI change to opsboard: lint + build + unit tests +
+# visual regression (committed Playwright baselines). See
+# opsboard/docs/design-guardrail.md for the runbook.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "opsboard/**"
+      - ".github/workflows/opsboard-design-guardrail.yml"
+  pull_request:
+    paths:
+      - "opsboard/**"
+      - ".github/workflows/opsboard-design-guardrail.yml"
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: opsboard
+
+jobs:
+  guardrail:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # Pinned to the project's @playwright/test version so the browser, system
+    # libraries and fonts match the environment the visual baselines target.
+    # Browsers are preinstalled in this image, so no `playwright install` step.
+    container:
+      image: mcr.microsoft.com/playwright:v1.58.0-noble
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Visual verification
+        run: npm run verify:visual
+
+      - name: Unit tests
+        run: npm test -- --run
+
+      # On failure, publish the Playwright diff/actual/expected images so a
+      # reviewer can see exactly what changed without reproducing locally.
+      - name: Upload visual diff artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: opsboard-visual-artifacts
+          path: |
+            opsboard/test-results/
+            opsboard/playwright-report/
+          retention-days: 7
+          if-no-files-found: ignore

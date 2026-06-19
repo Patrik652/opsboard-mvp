@@ -11,6 +11,7 @@
     "lint": "eslint",
     "test": "vitest",
     "test:e2e": "playwright test",
+    "verify": "npm run lint && npm run build && npm run verify:visual && npm run test -- --run",
     "verify:visual": "playwright test --config playwright.visual.config.ts",
     "verify:visual:update": "playwright test --config playwright.visual.config.ts --update-snapshots",
     "test:e2e:live": "PLAYWRIGHT_BASE_URL=https://opsboard-mvp-live.web.app playwright test tests/e2e/basic.spec.ts --reporter=line",

@@ -603,3 +603,45 @@ No baseline update, no threshold change, no shade consolidation. **Cumulative dr
 ## Decision
 
 The grayscale text scale now speaks in `primary`/`body`/`secondary`/`muted`/`subtle` roles. Almost all numbered-shade primitives are eliminated; the remaining are deliberate one-offs (yellow/rose notice, lone hover surface) or brand CTA, plus `text-white` headings. **Phase 5B** (optional): decide whether to tokenize `text-white` headings as `--color-text-strong` and whether any hierarchy consolidation is wanted — likely small. After that, the natural next step is **CI wiring** (run `verify:visual` + `lint` + `build` + `test` on every change) and a short runbook, so the guardrail is enforced automatically rather than by hand.
+
+---
+
+# Phase 6 — Enforce the guardrail in CI + runbook (2026-06-19)
+
+Goal: make Path A enforceable automatically for every future AI/human UI change, and document how to operate it. Base: commit `5767c84`. No UI/token/baseline changes.
+
+## CI workflow
+
+`.github/workflows/opsboard-design-guardrail.yml` (repo root — opsboard is a subdirectory; `defaults.run.working-directory: opsboard`).
+
+- **Triggers:** `pull_request` and `push` to `main`, path-filtered to `opsboard/**` (+ the workflow file).
+- **Environment:** pinned container `mcr.microsoft.com/playwright:v1.58.0-noble` (matches the installed `@playwright/test` 1.58.0 → consistent browser/fonts vs the baselines; browsers preinstalled, so no `playwright install` step). Node 22 ships in the image (matches local + Next 16).
+- **Install:** `npm ci` (uses the committed `package-lock.json`).
+- **Steps:** `npm run lint` → `npm run build` → `npm run verify:visual` → `npm test -- --run`.
+- **On failure:** uploads `opsboard/test-results/` + `opsboard/playwright-report/` (the Playwright actual/expected/diff PNGs) as an artifact.
+- Coexists with the existing `claude-security-review.yml`; checkout action SHA-pinned to match repo convention.
+
+## Aggregate script
+
+`package.json` → added `"verify": "npm run lint && npm run build && npm run verify:visual && npm run test -- --run"`. Existing scripts unchanged.
+
+## Runbook
+
+`opsboard/docs/design-guardrail.md` — covers: source of truth (code + `globals.css` tokens + baselines), running checks locally, intentional baseline updates, adding a new route to the visual matrix, token-change rules (exact alias → 0 diff; redesign → conscious baseline update + note; never loosen the threshold), the CI baseline-environment caveat, and the deferred Figma/Pencil status.
+
+## Commands verified (local)
+
+| Command | Result |
+|---|---|
+| `npm run verify` (aggregate) | ✔ pass — full chain green |
+| `npm run lint` | ✔ pass |
+| `npm run build` | ✔ success — 11 static routes |
+| `npm run verify:visual` | ✔ 16/16, baselines unchanged |
+| `npm test -- --run` | ✔ 39/39 |
+| workflow YAML | ✔ valid (1 job, 7 steps, pinned container) |
+
+> **Not verified without a push:** that the CI runner's rendering matches the locally-generated baselines pixel-for-pixel. The container is pinned to reduce this risk; if the first CI run shows environment-only (font-AA) diffs, regenerate baselines once inside CI and commit them as a deliberate update (see the runbook's *Baseline environment note*). This is expected setup, not a regression.
+
+## Final Path A status — done enough
+
+PoC → productized loop → full route coverage → semantic token taxonomy (surfaces, borders, accent, data-state, text scale; **225 → 4** numbered-shade primitives) → **CI enforcement**. Every future UI change now runs lint + build + visual regression + unit tests automatically. The design source of truth is code + `globals.css` tokens, verified by 16 committed screenshots. A visual-canvas leg (Pencil/Figma) remains an **optional** future add-on, only if a drawing surface is wanted.
