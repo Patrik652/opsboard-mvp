@@ -645,3 +645,31 @@ Goal: make Path A enforceable automatically for every future AI/human UI change,
 ## Final Path A status — done enough
 
 PoC → productized loop → full route coverage → semantic token taxonomy (surfaces, borders, accent, data-state, text scale; **225 → 4** numbered-shade primitives) → **CI enforcement**. Every future UI change now runs lint + build + visual regression + unit tests automatically. The design source of truth is code + `globals.css` tokens, verified by 16 committed screenshots. A visual-canvas leg (Pencil/Figma) remains an **optional** future add-on, only if a drawing surface is wanted.
+
+---
+
+# Phase 7 — Validate the guardrail in real CI (2026-06-19)
+
+Goal: prove the GitHub Actions runner renders the visual baselines correctly. Branch `design-guardrail-ci-validation`, draft PR #1 against `main`. Not merged, not deployed.
+
+## What real CI revealed (and the fixes)
+
+The first runs were red — and surfaced two genuine issues the local loop never caught:
+
+1. **CDN fonts → non-deterministic rendering.** `home@mobile` failed on the runner with a stable ~3% text-pixel diff (identical layout). Root cause: Space Grotesk / IBM Plex Mono were loaded from the Google Fonts CDN at runtime (`@import`), which renders non-deterministically across environments and also caused intermittent font-request `console.error`s and a `networkidle` hang.
+   **Fix:** self-host both fonts with `next/font/google` (`layout.tsx`), point `--font-sans`/`--font-mono` at the generated CSS vars, drop the CDN `@import`. Deterministic everywhere + a real production improvement (no FOUT, privacy, offline).
+
+2. **Flaky `/operations` hydration warning.** Switching the spec to `waitForLoadState("load")` surfaced a dev-mode React hydration mismatch on `/operations` (the page reads browser-storage-backed singletons during SSR; the demo data-load races hydration).
+   **Fix:** revert to `waitForLoadState("networkidle")`, which is stable for this app (with the CDN gone it no longer hangs). The hydration race is a pre-existing app concern logged for later, not a design-guardrail issue.
+
+3. **Baselines must be runner-generated.** Even inside the same pinned container, sub-pixel font rasterization differs between the dev machine and the runner. 15/16 baselines are byte-identical across machines; only `home-mobile` differs. So the guardrail workflow now regenerates baselines on the runner on failure and uploads them as the `opsboard-runner-baselines` artifact; `home-mobile.png` was committed from that artifact. **CI is the canonical baseline environment.**
+
+## Result
+
+Final CI run: **success — guardrail check green** (lint + build + visual 16/16 + unit tests 39/39) on the pinned container runner. The design guardrail is now proven to enforce Path A on real CI, not just locally.
+
+Run: `https://github.com/Patrik652/opsboard-mvp/actions/runs/27822813083` · PR: `https://github.com/Patrik652/opsboard-mvp/pull/1`
+
+## Decision
+
+Path A is **validated end-to-end**: PoC → productized loop → route coverage → token taxonomy → CI enforcement → **real-CI validation**. Every future UI change is guarded automatically. The only environment-coupled caveat (`home-mobile` baseline = runner-canonical) is documented in `docs/design-guardrail.md`. Figma/Pencil remain an optional canvas leg for later.

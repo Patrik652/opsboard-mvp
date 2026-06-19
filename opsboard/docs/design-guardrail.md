@@ -106,16 +106,28 @@ pinned Playwright container (`mcr.microsoft.com/playwright:v1.58.0-noble`) so
 the browser/fonts match the baseline environment, and uploads the
 diff/actual/expected images as an artifact when the visual step fails.
 
-> **Baseline environment note.** `toHaveScreenshot` baselines are
-> environment-sensitive (font anti-aliasing, browser build). The committed
-> baselines were generated locally. The CI container is pinned to the same
-> Playwright version to minimise drift, but the **first** CI run may still
-> surface environment-only differences. If it does — and the diff is clearly
-> just AA/font rendering, not a real change — regenerate the baselines **once
-> inside the CI environment** (run the workflow's container locally, or use a
-> one-off `--update-snapshots` job) and commit them as a deliberate, reviewed
-> update. From then on the CI container is the canonical baseline environment.
-> This is expected setup, not a guardrail failure.
+> **Baseline environment note (validated 2026-06-19).** `toHaveScreenshot`
+> baselines are environment-sensitive. Two things were needed to make them
+> portable to CI:
+>
+> 1. **Self-hosted fonts.** Fonts are loaded with `next/font` (baked into the
+>    build), not a runtime Google Fonts CDN `@import`. The CDN rendered
+>    non-deterministically across environments and caused console errors and a
+>    `networkidle` hang. **Do not reintroduce a CDN `@import` for fonts.**
+> 2. **Runner-generated baselines.** Even inside the same pinned container,
+>    sub-pixel font rasterization differs between a developer machine and the
+>    GitHub runner. In practice 15/16 baselines are byte-identical across
+>    machines; only `home-mobile` (dense hero text at the smallest viewport)
+>    differs (~3%). So **`home-mobile.png` is committed from the runner**, and
+>    **CI is the canonical baseline environment**.
+>
+> **Local visual runs may diff on `home-mobile`** — that's expected; trust CI
+> for that one screenshot. To realign baselines after an intentional UI change:
+> push the branch, let the guardrail run, and if the visual step fails it
+> regenerates baselines on the runner and uploads them as the
+> `opsboard-runner-baselines` artifact. Download that artifact, copy the PNGs
+> into `tests/visual/__screenshots__/`, review the diff, and commit. **Never**
+> raise the threshold to absorb a diff.
 
 ## Figma / Pencil status
 
