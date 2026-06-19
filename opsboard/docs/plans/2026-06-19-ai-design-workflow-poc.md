@@ -196,3 +196,53 @@ The negative test proves the guardrail catches real content/layout regressions w
 ## Decision: Figma / Pencil deferred
 
 Path A is now a committed, repeatable guardrail with no external service. Figma MCP (View/starter seat) and Pencil `.pen` remain **deferred** — the visual-canvas leg is revisited only after the verification loop is in daily use. Code + `globals.css` tokens stay the single source of truth for Claude + Codex UI work.
+
+---
+
+# Phase 3A — Expand visual route coverage (2026-06-19)
+
+Goal: cover real app surfaces, not only `/`. Base: commit `8402168`.
+
+## Routes covered
+
+| Route | Why deterministic | Baselines |
+|---|---|---|
+| `/` | static marketing page | `home-{desktop,mobile}.png` (reused, unchanged) |
+| `/boards` | demo workspace seeded from static `buildSeedData()` (fixed ids/titles/priority); BoardView renders no timestamps | `boards-{desktop,mobile}.png` |
+| `/incidents` | same static seed; IncidentList renders title/severity/state only, no timestamps | `incidents-{desktop,mobile}.png` |
+
+All baselines: `tests/visual/__screenshots__/<route>-<viewport>.png` (desktop `1440x900`, mobile `390x844`, fullPage).
+
+**Auth/blocker analysis:** the `(app)` group is wrapped in `RequireWorkspace`, which in **demo/guest mode renders children directly** (no login). `useBoardsViewModel`/`useIncidentsViewModel` resolve the **demo repository** (`DEMO_WORKSPACE_USER_ID`), seeded by `src/lib/seed.ts` → fully static (no `Date.now()`/`Math.random()`/`new Date`). No production code was touched for determinism; no auth/external blocker.
+
+## Spec structure
+
+`tests/visual/home.visual.spec.ts` → generalized into **`tests/visual/routes.visual.spec.ts`** (route × viewport matrix). Reuses the existing `playwright.visual.config.ts` and `tests/visual/screenshot.css`. Each test waits for the route heading (real content, not the loading state) before snapshotting.
+
+## Console-error check
+
+`attachErrorGuard(page)` on every visual test:
+- fails on any browser `pageerror`,
+- fails on any `console` message of type `error`,
+- `IGNORED_ERROR_PATTERNS` is **empty** (no exceptions needed — runs are clean). Kept explicit so any future exception is a deliberate, reviewed addition, never a silent loosening.
+
+Result: 0 console errors / 0 page errors across all 6 tests.
+
+## Skipped routes + reason
+
+| Route | Reason skipped (this phase) |
+|---|---|
+| `/audit` | `AuditTimeline` renders `new Date(log.createdAt).toLocaleString()` → locale/timezone-dependent text. Seed timestamp is fixed, but locale rendering is environment-coupled; defer until a deterministic format/stub is chosen. |
+| `/status`, `/analytics`, `/ai`, `/operations` | Static-seed-backed and likely stable, but out of this phase's scope (`/boards` + `/incidents` requested). Candidates for Phase 3A+. |
+
+## Verification commands + exact results
+
+| Command | Result |
+|---|---|
+| `npm run lint` | ✔ pass (exit 0) |
+| `npm run build` | ✔ success — 11 static routes prerendered |
+| `npm run verify:visual:update` | ✔ 6 baselines (home reused, boards/incidents written) |
+| `npm run verify:visual` | ✔ **6 passed** (cross-process run = determinism confirmed) |
+| `npm test -- --run` (vitest) | ✔ 24 files / 37 tests passed |
+
+No threshold change (`maxDiffPixelRatio 0.01` unchanged). Coverage: 3 routes × 2 viewports = 6 visual checks.
