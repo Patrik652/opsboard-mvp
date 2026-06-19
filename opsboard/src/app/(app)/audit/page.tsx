@@ -19,7 +19,7 @@ export default function AuditPage() {
         </div>
       ) : null}
       {isLoading ? (
-        <div className="mb-4 rounded-xl border border-zinc-800 bg-zinc-900/60 p-4 text-sm text-zinc-400">
+        <div className="mb-4 rounded-xl border border-border bg-panel/60 p-4 text-sm text-zinc-400">
           Loading audit history...
         </div>
       ) : null}

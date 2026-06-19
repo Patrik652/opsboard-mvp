@@ -362,3 +362,53 @@ No threshold change. Coverage now **8 routes × 2 viewports = 16 visual checks**
 ## Decision
 
 Every demo route is now screenshot-guarded → Phase 3D (migrate the newly covered components — `AiPanel`, `AnalyticsDashboard`, `ReliabilityOpsPanel`, `status`, `audit` — to semantic tokens) is safe to do with the guardrail catching any drift. Phase 4 (status/severity color taxonomy) follows.
+
+---
+
+# Phase 3D — Migrate covered surfaces to semantic tokens (2026-06-19)
+
+Goal: finish the panel/border/accent migration for the components now under visual baselines, with zero visual change. Base: commit `4c57ab2`. **No new tokens** (reuse the Phase 3B taxonomy).
+
+## Inventory before / after
+
+| Metric | Before | After |
+|---|---|---|
+| Primitive color utilities in `src` (`*.tsx`) | **174** | **120** |
+| Semantic token utilities in use | 51 | **105** |
+
+54 occurrences migrated (exact-equal aliases), 0 added back.
+
+## Files migrated (6)
+
+`app/(app)/status/page.tsx`, `app/(app)/audit/page.tsx`, `components/operations/ReliabilityOpsPanel.tsx`, `components/ai/AiPanel.tsx`, `components/audit/AuditTimeline.tsx`, `components/analytics/AnalyticsDashboard.tsx`.
+
+Same exact-alias map as Phase 3B: `bg-zinc-900[/60]`→`bg-panel[/60]`, `bg-zinc-950`→`bg-panel-muted`, `border-zinc-800`→`border-border`, `border-zinc-700`→`border-border-strong`, accent buttons `bg-emerald-400 … text-zinc-900`→`bg-accent … text-accent-foreground`, and the audit timeline marker dot `bg-emerald-400`→`bg-accent` (uniform brand decoration, not a data state).
+
+After this slice, **no exact-equal panel/border/accent primitive remains** in `src` (verified) except the deliberately-excluded `GoogleLoginButton` hover.
+
+## Left untouched (remaining 120) + reason
+
+| Category | ~count | Reason |
+|---|---|---|
+| `text-zinc-100..500` grayscale text scale | 65 | No text-scale token in the taxonomy; needs a `foreground`/`muted-foreground` scale — out of scope. |
+| `rose-*` / `red-*` / `amber-*` + `emerald-200/300/500` status/severity | ~51 | Data-state colors (incident severity, service health, error banners) → **Phase 4** data-color taxonomy. |
+| `GoogleLoginButton` `bg-emerald-500` + `hover:bg-emerald-400` CTA | 2 | Distinct accent shade (500); aliasing would shift pixels — excluded per scope. |
+| lone `bg-zinc-800` (`DemoLogin`) | 1 | No matching surface token (`--panel` = zinc-900); leave rather than invent. |
+| `text-white` / `text-black` | 24* | Not `*-[0-9]` primitives; no token — out of scope. |
+
+(*not counted in the 120 family total.)
+
+## Verification results
+
+| Command | Result |
+|---|---|
+| `npm run verify:visual` | ✔ **16 passed, baselines unchanged** — exact-alias migration = 0 pixel diff |
+| `npm run lint` | ✔ pass (exit 0) |
+| `npm run build` | ✔ success — 11 static routes |
+| `npm test -- --run` (vitest) | ✔ 39 passed / 25 files |
+
+No baseline update, no threshold change, no new tokens, no data-color touched.
+
+## Decision
+
+Panel/border/accent token migration is now **complete across all 16-test-covered surfaces** (drift cut 225 → 120 across phases 3B+3D, −47%). Remaining primitives are intentionally either out-of-taxonomy (text scale, white/black) or data-semantic. Next: **Phase 4** — design `--success` / `--warning` / `--danger` (+ maybe `--info`) and migrate severity/status colors, kept separate from this panel cleanup as planned.

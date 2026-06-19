@@ -134,25 +134,25 @@ export default function ReliabilityOpsPanel({
       ) : null}
 
       {isLoading ? (
-        <div className="mb-4 rounded-xl border border-zinc-800 bg-zinc-900/60 p-4 text-sm text-zinc-400">
+        <div className="mb-4 rounded-xl border border-border bg-panel/60 p-4 text-sm text-zinc-400">
           Loading operational workspace...
         </div>
       ) : null}
 
       <div className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-4">
+        <div className="rounded-xl border border-border bg-panel/60 p-4">
           <div className="text-sm text-zinc-400">Telemetry events</div>
           <div className="mt-2 text-3xl font-semibold text-white">{telemetrySummary.total}</div>
           <div className="mt-2 text-xs text-zinc-500">
             Warn/Error: {telemetrySummary.byLevel.warn + telemetrySummary.byLevel.error}
           </div>
         </div>
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-4">
+        <div className="rounded-xl border border-border bg-panel/60 p-4">
           <div className="text-sm text-zinc-400">Audit entries</div>
           <div className="mt-2 text-3xl font-semibold text-white">{metrics.auditEntries}</div>
           <div className="mt-2 text-xs text-zinc-500">Persistent workspace timeline</div>
         </div>
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-4">
+        <div className="rounded-xl border border-border bg-panel/60 p-4">
           <div className="text-sm text-zinc-400">Latest snapshot</div>
           <div className="mt-2 text-sm text-zinc-200">
             {latestSnapshot
@@ -162,7 +162,7 @@ export default function ReliabilityOpsPanel({
         </div>
       </div>
 
-      <div className="mt-4 rounded-xl border border-zinc-800 bg-zinc-900/60 p-4">
+      <div className="mt-4 rounded-xl border border-border bg-panel/60 p-4">
         <div className="text-sm text-zinc-400">Live workspace posture</div>
         <div className="mt-2 flex flex-wrap gap-4 text-sm text-zinc-200">
           <span>Open incidents: {metrics.openIncidents}</span>
@@ -173,7 +173,7 @@ export default function ReliabilityOpsPanel({
 
       <div className="mt-6 flex flex-wrap gap-3">
         <button
-          className="rounded-lg border border-zinc-700 px-4 py-2 text-sm text-zinc-100"
+          className="rounded-lg border border-border-strong px-4 py-2 text-sm text-zinc-100"
           disabled={isWorking}
           type="button"
           onClick={recordSyntheticAlert}
@@ -181,7 +181,7 @@ export default function ReliabilityOpsPanel({
           Record synthetic alert
         </button>
         <button
-          className="rounded-lg bg-emerald-400 px-4 py-2 text-sm font-semibold text-zinc-900"
+          className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground"
           disabled={isWorking || !workspace}
           type="button"
           onClick={createSnapshot}
@@ -190,10 +190,10 @@ export default function ReliabilityOpsPanel({
         </button>
       </div>
 
-      <div className="mt-6 rounded-xl border border-zinc-800 bg-zinc-900/60 p-4">
+      <div className="mt-6 rounded-xl border border-border bg-panel/60 p-4">
         <div className="mb-2 text-sm text-zinc-300">Snapshot payload</div>
         <textarea
-          className="h-44 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 font-mono text-xs text-zinc-200"
+          className="h-44 w-full rounded-lg border border-border-strong bg-panel-muted px-3 py-2 font-mono text-xs text-zinc-200"
           value={snapshotJson}
           readOnly
         />

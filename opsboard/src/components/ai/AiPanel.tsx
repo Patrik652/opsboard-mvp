@@ -73,7 +73,7 @@ export default function AiPanel() {
         </p>
       </div>
 
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+      <div className="rounded-2xl border border-border bg-panel/60 p-6">
         <div className="text-sm text-zinc-300">Agent workflow</div>
         {error ? (
           <div className="mt-4 rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
@@ -81,13 +81,13 @@ export default function AiPanel() {
           </div>
         ) : null}
         {isLoading ? (
-          <div className="mt-4 rounded-lg border border-zinc-800 bg-zinc-950 px-4 py-3 text-sm text-zinc-400">
+          <div className="mt-4 rounded-lg border border-border bg-panel-muted px-4 py-3 text-sm text-zinc-400">
             Loading workspace for deterministic analysis...
           </div>
         ) : null}
         <div className="mt-3 grid gap-3 md:grid-cols-[minmax(0,1fr)_auto]">
           <select
-            className="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-white"
+            className="w-full rounded-lg border border-border-strong bg-panel-muted px-3 py-2 text-sm text-white"
             value={effectiveSelectedIncidentId}
             onChange={(event) => setSelectedIncidentId(event.target.value)}
             disabled={isLoading || !incidents.length}
@@ -99,7 +99,7 @@ export default function AiPanel() {
             ))}
           </select>
           <button
-            className="rounded-lg bg-emerald-400 px-4 py-2 text-sm font-semibold text-zinc-900"
+            className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground"
             disabled={isLoading || !selectedIncident}
             type="button"
             onClick={runWorkflow}
@@ -112,7 +112,7 @@ export default function AiPanel() {
 
       {report ? (
         <div className="mt-6 grid gap-4 lg:grid-cols-2">
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-4">
+          <div className="rounded-xl border border-border bg-panel/60 p-4">
             <h2 className="text-base font-semibold text-white">Incident summary</h2>
             <div className={`mt-2 text-sm font-semibold ${formatRiskTone(report.risk.score)}`}>
               Risk score: {report.risk.score} ({report.risk.level.toUpperCase()})
@@ -121,7 +121,7 @@ export default function AiPanel() {
             <p className="mt-2 text-sm text-zinc-300">{report.summary.narrative}</p>
           </div>
 
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-4">
+          <div className="rounded-xl border border-border bg-panel/60 p-4">
             <h2 className="text-base font-semibold text-white">Recommended actions</h2>
             <ul className="mt-3 list-disc space-y-2 pl-5 text-sm text-zinc-200">
               {report.actionPlan.immediate.map((step) => (
@@ -130,11 +130,11 @@ export default function AiPanel() {
             </ul>
           </div>
 
-          <div className="rounded-xl border border-zinc-800 bg-zinc-900/60 p-4 lg:col-span-2">
+          <div className="rounded-xl border border-border bg-panel/60 p-4 lg:col-span-2">
             <h2 className="text-base font-semibold text-white">Agent execution trace</h2>
             <div className="mt-3 grid gap-3 md:grid-cols-3">
               {report.trace.map((item) => (
-                <div key={item.agent} className="rounded-lg border border-zinc-800 bg-zinc-950 p-3">
+                <div key={item.agent} className="rounded-lg border border-border bg-panel-muted p-3">
                   <div className="text-xs uppercase tracking-wide text-zinc-500">{item.agent}</div>
                   <div className="mt-2 text-sm text-zinc-200">{item.durationMs}ms</div>
                 </div>

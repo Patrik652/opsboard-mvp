@@ -42,11 +42,11 @@ export default function StatusPage() {
         </div>
       ) : null}
       {isLoading ? (
-        <div className="mb-4 rounded-xl border border-zinc-800 bg-zinc-900/60 p-4 text-sm text-zinc-400">
+        <div className="mb-4 rounded-xl border border-border bg-panel/60 p-4 text-sm text-zinc-400">
           Loading service health...
         </div>
       ) : null}
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+      <div className="rounded-2xl border border-border bg-panel/60 p-6">
         <div className="flex items-center justify-between">
           <div>
             <div className="text-sm text-zinc-400">Workspace status</div>
@@ -61,7 +61,7 @@ export default function StatusPage() {
         </div>
         <div className="mt-6 grid gap-4 md:grid-cols-3">
           {services.map((service) => (
-            <div key={service.id} className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+            <div key={service.id} className="rounded-xl border border-border bg-panel-muted p-4">
               <div className="text-sm text-zinc-400">{service.name}</div>
               <div className={`text-lg ${serviceTone[service.status]}`}>
                 {service.status === "operational"
