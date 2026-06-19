@@ -23,6 +23,16 @@ const routes: Route[] = [
   { name: "home", path: "/", heading: "Command your work. Prove your reliability." },
   { name: "boards", path: "/boards", heading: "Opsboard" },
   { name: "incidents", path: "/incidents", heading: "Incidents" },
+  // Phase 3C: remaining demo-renderable routes. All deterministic — they read
+  // the static seed and display no timestamps on initial load, except /audit,
+  // whose timestamp now goes through the fixed-UTC formatTimestamp() helper.
+  // /operations renders "No snapshot yet" + zero telemetry on first load (the
+  // toLocaleString branch is never reached before a user action).
+  { name: "status", path: "/status", heading: "Status" },
+  { name: "analytics", path: "/analytics", heading: "Reliability Pulse" },
+  { name: "ai", path: "/ai", heading: "AI Operations Copilot" },
+  { name: "operations", path: "/operations", heading: "Operational readiness" },
+  { name: "audit", path: "/audit", heading: "Audit log" },
 ];
 
 const viewports = {

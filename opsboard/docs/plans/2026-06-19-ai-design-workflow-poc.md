@@ -310,3 +310,55 @@ No threshold change, no baseline update (none was justified — pixels identical
 ## Decision
 
 Semantic primitives land **before** Pencil/Figma, as intended — the token vocabulary is the thing that stops AI/Codex drifting between `zinc-*`/`emerald-*`. Next slice: extend baselines to `/status`,`/analytics`,`/ai`,`/operations`,`/audit`, then migrate their surfaces; separately, design the data-color taxonomy (`--success`/`--warning`/`--danger` + severity scale).
+
+---
+
+# Phase 3C — Cover remaining stable routes visually (2026-06-19)
+
+Goal: guard future token migration with screenshots on every demo-renderable route. Base: commit `902ebe1`.
+
+## Route inventory
+
+| Route | Heading | Class | Covered |
+|---|---|---|---|
+| `/` | Command your work… | stable (static page) | ✔ (3B) |
+| `/boards` | Opsboard | stable (static seed) | ✔ (3B) |
+| `/incidents` | Incidents | stable (static seed) | ✔ (3B) |
+| `/status` | Status | stable — services from static seed, no dates | ✔ **new** |
+| `/analytics` | Reliability Pulse | stable — metrics derived from static seed, no dates/random | ✔ **new** |
+| `/ai` | AI Operations Copilot | stable — copilot only runs on user action; initial render static | ✔ **new** |
+| `/operations` | Operational readiness | stable on first load — telemetry 0 + "No snapshot yet" (the `toLocaleString` branch needs a user action) | ✔ **new** |
+| `/audit` | Audit log | was unstable (locale/timezone timestamp) → **fixed** (see below) | ✔ **new** |
+
+**All 8 routes covered. No route skipped or blocked** — `RequireWorkspace` renders in demo mode without auth, so no external/auth blockers.
+
+## Deterministic date/locale fix (`/audit`, and `/operations` snapshot)
+
+`Date#toLocaleString()` is host-locale/timezone dependent → non-deterministic screenshots. Extracted a production-safe display helper:
+
+- `src/lib/formatDateTime.ts` → `formatTimestamp(value)` using `Intl.DateTimeFormat("en-GB", { timeZone: "UTC", … })`, output e.g. **`01 Mar 2026, 09:00 UTC`**.
+- Applied at both call sites: `components/audit/AuditTimeline.tsx` and `components/operations/ReliabilityOpsPanel.tsx` (snapshot timestamp).
+- Unit test `src/lib/formatDateTime.test.ts` (2 cases: fixed-UTC output, input-type stability).
+- No browser globals stubbed in the visual test — the fix is real app behavior, not test-only.
+
+## Added baselines (10)
+
+`tests/visual/__screenshots__/{status,analytics,ai,operations,audit}-{desktop,mobile}.png` (desktop `1440x900`, mobile `390x844`, fullPage, console guard, reused config + `screenshot.css`).
+
+Existing `home-*`, `boards-*`, `incidents-*` baselines **unchanged** (byte-identical; the helper change does not touch those routes).
+
+## Verification results
+
+| Command | Result |
+|---|---|
+| `npm run verify:visual:update` | ✔ 16 baselines (6 reused, 10 written) |
+| `npm run verify:visual` | ✔ **16 passed** (cross-process = determinism confirmed, incl. `/audit` + `/operations`) |
+| `npm run lint` | ✔ pass (exit 0) |
+| `npm run build` | ✔ success — 11 static routes |
+| `npm test -- --run` (vitest) | ✔ **39 passed / 25 files** (+2 for `formatTimestamp`) |
+
+No threshold change. Coverage now **8 routes × 2 viewports = 16 visual checks**.
+
+## Decision
+
+Every demo route is now screenshot-guarded → Phase 3D (migrate the newly covered components — `AiPanel`, `AnalyticsDashboard`, `ReliabilityOpsPanel`, `status`, `audit` — to semantic tokens) is safe to do with the guardrail catching any drift. Phase 4 (status/severity color taxonomy) follows.

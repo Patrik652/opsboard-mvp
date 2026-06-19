@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { buildWorkspaceMetrics } from "@/features/analytics/buildWorkspaceMetrics";
+import { formatTimestamp } from "@/lib/formatDateTime";
 import { resolveWorkspaceRepository } from "@/features/data/repositories/runtimeWorkspaceRepository";
 import type { WorkspaceSnapshot } from "@/features/data/repositories/workspaceRepository";
 import { recoveryKit, telemetryClient } from "@/features/platform/client";
@@ -155,7 +156,7 @@ export default function ReliabilityOpsPanel({
           <div className="text-sm text-zinc-400">Latest snapshot</div>
           <div className="mt-2 text-sm text-zinc-200">
             {latestSnapshot
-              ? new Date(latestSnapshot.createdAt).toLocaleString()
+              ? formatTimestamp(latestSnapshot.createdAt)
               : "No snapshot yet"}
           </div>
         </div>

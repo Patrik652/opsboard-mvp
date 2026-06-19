@@ -1,4 +1,5 @@
 import type { AuditLog } from "@/lib/types";
+import { formatTimestamp } from "@/lib/formatDateTime";
 
 export default function AuditTimeline({ logs }: { logs: AuditLog[] }) {
   if (logs.length === 0) {
@@ -22,7 +23,7 @@ export default function AuditTimeline({ logs }: { logs: AuditLog[] }) {
                 {[log.actor, log.action].filter(Boolean).join(" · ")}
               </div>
             ) : null}
-            <div className="mt-2 text-xs text-zinc-500">{new Date(log.createdAt).toLocaleString()}</div>
+            <div className="mt-2 text-xs text-zinc-500">{formatTimestamp(log.createdAt)}</div>
           </div>
         </div>
       ))}
