@@ -76,11 +76,19 @@ for (const route of routes) {
 
       await page.setViewportSize(viewport);
       await page.goto(route.path);
-      await page.waitForLoadState("networkidle");
+      await page.waitForLoadState("load");
       // Wait for real content (not the loading state) before snapshotting.
       await expect(
         page.getByRole("heading", { name: route.heading }).first()
       ).toBeVisible();
+      // Wait for all webfonts (Space Grotesk / IBM Plex Mono, loaded from a CDN)
+      // to finish before screenshotting, so text isn't captured mid-swap with a
+      // fallback face. This is the deterministic alternative to `networkidle`,
+      // which Playwright discourages and which also hangs on the lingering font
+      // CDN connection. The pinned CI container renders identically to the
+      // committed baselines once fonts are ready (verified: container
+      // verify:visual:update produced byte-identical baselines).
+      await page.evaluate(() => document.fonts.ready);
 
       await expect(page).toHaveScreenshot(`${route.name}-${vpName}.png`, {
         fullPage: true,
