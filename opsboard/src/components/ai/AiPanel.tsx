@@ -9,9 +9,9 @@ import { useWorkspaceSnapshot } from "@/features/workspace/useWorkspaceSnapshot"
 
 function formatRiskTone(score: number): string {
   if (score >= 80) return "text-red-300";
-  if (score >= 60) return "text-amber-300";
+  if (score >= 60) return "text-warning";
   if (score >= 35) return "text-yellow-300";
-  return "text-emerald-300";
+  return "text-success";
 }
 
 export default function AiPanel() {
@@ -76,7 +76,7 @@ export default function AiPanel() {
       <div className="rounded-2xl border border-border bg-panel/60 p-6">
         <div className="text-sm text-zinc-300">Agent workflow</div>
         {error ? (
-          <div className="mt-4 rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+          <div className="mt-4 rounded-lg border border-danger-muted/30 bg-danger-muted/10 px-4 py-3 text-sm text-danger">
             {error}
           </div>
         ) : null}
@@ -144,7 +144,7 @@ export default function AiPanel() {
         </div>
       ) : null}
 
-      <div className="mt-6 rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-4 text-xs text-emerald-200">
+      <div className="mt-6 rounded-xl border border-success-muted/30 bg-success-muted/5 p-4 text-xs text-emerald-200">
         Copilot is deterministic by default and derives recommendations from the live workspace snapshot.
       </div>
     </section>

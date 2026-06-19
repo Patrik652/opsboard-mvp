@@ -53,7 +53,7 @@ export default function RequireWorkspace({ children }: { children: ReactNode }) 
   if (mode === "authenticated" && status === "error") {
     return (
       <div className="flex min-h-screen items-center justify-center bg-panel-muted text-zinc-100">
-        <div className="rounded-xl border border-rose-500/40 bg-rose-500/10 px-6 py-4 text-sm text-rose-200">
+        <div className="rounded-xl border border-danger-muted/40 bg-danger-muted/10 px-6 py-4 text-sm text-danger">
           Unable to open authenticated workspace right now.
         </div>
       </div>

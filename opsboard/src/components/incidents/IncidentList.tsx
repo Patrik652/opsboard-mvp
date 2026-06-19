@@ -4,8 +4,8 @@ import { useState } from "react";
 import type { Incident, IncidentState, Severity } from "@/features/data/model";
 
 const severityStyles: Record<Incident["severity"], string> = {
-  low: "text-emerald-300 bg-emerald-500/10",
-  med: "text-amber-300 bg-amber-500/10",
+  low: "text-success bg-success-muted/10",
+  med: "text-warning bg-warning-muted/10",
   high: "text-red-300 bg-red-500/10",
 };
 
@@ -116,7 +116,7 @@ export default function IncidentList({
       ) : null}
 
       {error ? (
-        <div className="rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+        <div className="rounded-lg border border-danger-muted/30 bg-danger-muted/10 px-4 py-3 text-sm text-danger">
           {error}
         </div>
       ) : null}

@@ -6,24 +6,24 @@ const overallTone = {
   operational: {
     label: "Operational",
     badge: "GREEN",
-    badgeClass: "bg-emerald-500/20 text-emerald-300",
+    badgeClass: "bg-success-muted/20 text-success",
   },
   degraded: {
     label: "Degraded",
     badge: "AMBER",
-    badgeClass: "bg-amber-500/20 text-amber-300",
+    badgeClass: "bg-warning-muted/20 text-warning",
   },
   outage: {
     label: "Outage",
     badge: "RED",
-    badgeClass: "bg-rose-500/20 text-rose-200",
+    badgeClass: "bg-danger-muted/20 text-danger",
   },
 } as const;
 
 const serviceTone = {
-  operational: "text-emerald-300",
-  degraded: "text-amber-300",
-  outage: "text-rose-200",
+  operational: "text-success",
+  degraded: "text-warning",
+  outage: "text-danger",
 } as const;
 
 export default function StatusPage() {
@@ -37,7 +37,7 @@ export default function StatusPage() {
         <p className="text-sm text-zinc-400">Public-facing service health snapshot.</p>
       </div>
       {error ? (
-        <div className="mb-4 rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+        <div className="mb-4 rounded-lg border border-danger-muted/30 bg-danger-muted/10 px-4 py-3 text-sm text-danger">
           {error}
         </div>
       ) : null}

@@ -22,7 +22,7 @@ export default function AnalyticsDashboard({
         <p className="text-sm text-zinc-400">Signals that show operational health at a glance.</p>
       </div>
       {error ? (
-        <div className="mb-4 rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+        <div className="mb-4 rounded-lg border border-danger-muted/30 bg-danger-muted/10 px-4 py-3 text-sm text-danger">
           {error}
         </div>
       ) : null}
@@ -42,7 +42,7 @@ export default function AnalyticsDashboard({
         </div>
         <div className="rounded-xl border border-border bg-panel/60 p-5">
           <div className="text-sm text-zinc-400">Uptime</div>
-          <div className="text-3xl font-semibold text-emerald-300">{metrics.uptime}</div>
+          <div className="text-3xl font-semibold text-success">{metrics.uptime}</div>
         </div>
       </div>
     </section>

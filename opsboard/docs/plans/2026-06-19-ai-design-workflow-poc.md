@@ -412,3 +412,69 @@ No baseline update, no threshold change, no new tokens, no data-color touched.
 ## Decision
 
 Panel/border/accent token migration is now **complete across all 16-test-covered surfaces** (drift cut 225 → 120 across phases 3B+3D, −47%). Remaining primitives are intentionally either out-of-taxonomy (text scale, white/black) or data-semantic. Next: **Phase 4** — design `--success` / `--warning` / `--danger` (+ maybe `--info`) and migrate severity/status colors, kept separate from this panel cleanup as planned.
+
+---
+
+# Phase 4A — Data color taxonomy (status / severity / health, 2026-06-19)
+
+Goal: map domain state → semantic token, migrating only exact-shade equivalents (0 pixel diff). Base: commit `44cedc7`. This is semantic mapping, not just renaming.
+
+## Taxonomy added (`globals.css`, exact aliases)
+
+Each role has a **foreground** shade (for text) and a **`-muted`** base used only with opacity (tints + borders), matching how the codebase already uses these colors.
+
+| Token | Alias of | Role / used for |
+|---|---|---|
+| `--color-success` | `--color-emerald-300` | ok/healthy text: status "operational", uptime metric, low severity, "all systems nominal" |
+| `--color-success-muted` | `--color-emerald-500` | success tints/borders (`/20 /10 /5 /30`) |
+| `--color-warning` | `--color-amber-300` | degraded/medium text |
+| `--color-warning-muted` | `--color-amber-500` | warning tints (`/20 /10`) |
+| `--color-danger` | `--color-rose-200` | error/outage text |
+| `--color-danger-muted` | `--color-rose-500` | error-panel + outage tints/borders (`/10 /20 /30 /40`) |
+
+**No `--info`** — no blue/cyan/info usage exists. No tokens added without usage.
+
+## Inventory before / after
+
+| Metric | Before | After |
+|---|---|---|
+| Primitive color utilities in `src` (`*.tsx`) | **120** | **76** |
+| Semantic data-token utilities in use | 0 | **44** |
+
+44 occurrences migrated (exact-equal), 0 added back.
+
+## Migrated meanings / files (9)
+
+- **success** (`text-emerald-300`→`text-success`, `bg/border-emerald-500`→`*-success-muted`): `status` operational badge+health, `Topbar` status badge, `AnalyticsDashboard` uptime, `IncidentList` low severity, `AiPanel` low-score + success panel surround.
+- **warning** (`text-amber-300`→`text-warning`, `bg-amber-500`→`bg-warning-muted`): `status` degraded, `IncidentList` med severity, `AiPanel` mid-score.
+- **danger** (`text-rose-200`→`text-danger`, `bg/border-rose-500`→`*-danger-muted`): error/empty panels in `status`, `audit`, `BoardView`, `ReliabilityOpsPanel`, `AnalyticsDashboard`, `RequireWorkspace`, `AiPanel`, `IncidentList`; `status` outage badge+health.
+
+## Left primitive + reason
+
+| Category | count | Reason |
+|---|---|---|
+| Incident **HIGH** severity + AI high-score: `text-red-300` / `bg-red-500/10` | 3 | Uses a **distinct `red` ramp**, not `rose`. Aliasing to `--danger` (rose-200) would shift pixels. Needs a deliberate severity-scale decision → **Phase 4B**. |
+| AI caution level `text-yellow-300` | 1 | One-off 4th tone (a `yellow` distinct from `amber`); no repeated role → 4B. |
+| Success-message text `text-emerald-200` | 4 | Shade 200 ≠ success (300); "status message" vs "state" semantics differ; too few to justify a `success-subtle` token → 4B. |
+| `CardComposer` inline error `text-rose-300` | 1 | Shade 300 ≠ danger (200); one-off. |
+| `GoogleLoginButton` `bg-emerald-500` CTA | 1 | Brand, not a data state — excluded. |
+| `text-zinc-100..500` scale + lone `bg-zinc-800` | ~66 | Out of this taxonomy (text-scale work is a separate phase). |
+
+## No tone helper extracted (deferred to 4B)
+
+The three conditional class maps — `status` `severityMeta`, `IncidentList` `severityStyles`, `AiPanel` confidence — use **different ramps** (status/incident-low use rose+emerald-300; incident-high uses red; AI adds a yellow 4th level). A shared `getTone()` would merge semantically distinct scales and/or shift pixels, so it is intentionally deferred to **Phase 4B** (after the red-vs-rose severity decision).
+
+## Verification results
+
+| Command | Result |
+|---|---|
+| `npm run verify:visual` | ✔ **16 passed, baselines unchanged** — exact-alias migration = 0 pixel diff |
+| `npm run lint` | ✔ pass (exit 0) |
+| `npm run build` | ✔ success — 11 static routes |
+| `npm test -- --run` (vitest) | ✔ 39 passed / 25 files |
+
+No baseline update, no threshold change. Cumulative drift: **225 → 76 primitives (−66%)** across phases 3B–4A.
+
+## Decision
+
+Status/severity/health now speak in `success`/`warning`/`danger` roles for every exact-shade case. The remaining data colors are a real semantic decision (red-vs-rose severity ramp, yellow caution, emerald-200 messages) → **Phase 4B**: decide the severity scale + optionally extract `getSeverityTone()`/`getHealthTone()` helpers with unit tests. **Phase 5** (text-scale tokens) is the other open thread.

@@ -14,7 +14,7 @@ export default function AuditPage() {
         <p className="text-sm text-zinc-400">Every action captured for compliance and review.</p>
       </div>
       {error ? (
-        <div className="mb-4 rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+        <div className="mb-4 rounded-lg border border-danger-muted/30 bg-danger-muted/10 px-4 py-3 text-sm text-danger">
           {error}
         </div>
       ) : null}

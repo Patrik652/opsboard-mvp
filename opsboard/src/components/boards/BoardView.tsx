@@ -67,7 +67,7 @@ export default function BoardView({
       ) : null}
 
       {error ? (
-        <div className="mb-4 rounded-lg border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+        <div className="mb-4 rounded-lg border border-danger-muted/30 bg-danger-muted/10 px-4 py-3 text-sm text-danger">
           {error}
         </div>
       ) : null}

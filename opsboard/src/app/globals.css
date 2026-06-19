@@ -24,6 +24,18 @@
   --color-accent: var(--color-emerald-400);
   --color-accent-foreground: var(--color-zinc-900);
 
+  /* Data-state tokens (status / severity / health). Each maps a domain role
+     to the exact shade already used: foreground shade for text, plus a
+     "-muted" base used only with opacity for tints and borders. Exact
+     aliases, so migration changes no pixels. Incident HIGH severity uses a
+     distinct red ramp (not rose) and stays primitive for now (see Phase 4B). */
+  --color-success: var(--color-emerald-300);
+  --color-success-muted: var(--color-emerald-500);
+  --color-warning: var(--color-amber-300);
+  --color-warning-muted: var(--color-amber-500);
+  --color-danger: var(--color-rose-200);
+  --color-danger-muted: var(--color-rose-500);
+
   --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
 }
